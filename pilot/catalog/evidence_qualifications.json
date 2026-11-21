@@ -1,0 +1,432 @@
+{
+  "schema": 1,
+  "reviewed_at": "2026-11-14",
+  "review_method": "source_pages_and_independent_agent_review_not_human_gold",
+  "documents": [
+    {
+      "doc_id": "doc_0086822b49e2d5df8658",
+      "source_sha256": "0086822b49e2d5df865817665501c8403bef4127469a8ce5d326c437342669df",
+      "claims_digest": "9a83f2cd68b4c2b38cceb94c30f6318b6f752ec72e81df5d811263fc22f85c93",
+      "qualifications": [
+        {
+          "id": "symbol-font-units",
+          "kind": "transcription_correction",
+          "claim_ids": [
+            "doc_0086822b49e2d5df8658_c002",
+            "doc_0086822b49e2d5df8658_c004",
+            "doc_0086822b49e2d5df8658_c005",
+            "doc_0086822b49e2d5df8658_c007"
+          ],
+          "pdf_pages": [
+            4,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            13,
+            14,
+            16,
+            17,
+            18,
+            19
+          ],
+          "summary": "已按原 PDF 的 SymbolMT 字形恢复微米和欧姆：焊盘直径2–15 µm，芯片厚度50/200 µm，每个互连约10 mΩ；芯片边长8×12 mm仍为毫米。",
+          "usage_limit": "使用修复后的单位。约80%是电测最大通过偏移与焊盘直径的比值，不能写成良率或设备对准精度；单位修复不增加原文未报告的材料和统计信息。",
+          "evidence": [
+            {
+              "pdf_page": 9,
+              "quote": "Pad size ranging from 2 - 15 µm; ~10 mΩ per link",
+              "locator": "原页字形"
+            },
+            {
+              "pdf_page": 13,
+              "quote": "8 x 12 mm Die with 10 µm bond pads, thinned to 50 or 200 µm",
+              "locator": "原页字形"
+            },
+            {
+              "pdf_page": 16,
+              "quote": "8 x 12 mm x 50 µm thick die with 15 µm bond pads",
+              "locator": "原页字形"
+            },
+            {
+              "pdf_page": 17,
+              "quote": "8 x 12 mm x 200 µm thick Die with 10 µm bond pads",
+              "locator": "原页字形"
+            }
+          ]
+        },
+        {
+          "id": "thin-die-equivalence-limit",
+          "kind": "source_limit",
+          "claim_ids": [
+            "doc_0086822b49e2d5df8658_c004"
+          ],
+          "pdf_pages": [
+            13
+          ],
+          "summary": "作者称50 µm和200 µm两组良率统计等效；该页未给出各批芯片数、等效界值或检验方法。",
+          "usage_limit": "可归因给作者并描述已测载具；不能将此表述作为经独立统计验证的普遍等效结论。",
+          "evidence": [
+            {
+              "pdf_page": 13,
+              "quote": "No decrease in yield for the thinner 50 µm die vs. 200 µm die (statistically equivalent)"
+            }
+          ]
+        },
+        {
+          "id": "twelve-die-yield-population",
+          "kind": "source_limit",
+          "claim_ids": [
+            "doc_0086822b49e2d5df8658_c005"
+          ],
+          "pdf_pages": [
+            16
+          ],
+          "summary": "12芯片堆叠页的56%指整体无空洞堆叠良率；图中从48个堆叠到第12层剩27个，27/48≈56.25%。页面另报初始颗粒异常后的单层良率95%，未给出该95%的计算方法。",
+          "usage_limit": "不能把56%或95%称为每个互连的电学良率，也不能不加假设地用95%的幂重建56%。Adeia第16页照片与Theil 2022第2页Fig. 1的8层代表照在视觉上相同；这是跨来源图像比对推断，两份原文没有明示照片复用关系或试验样品身份。不能把该照片作为12层独立图证，也不能由照片推断56%的数据来自8层试验。回答照片归属时须同时引用两页，区分原图注与比对推断。",
+          "evidence": [
+            {
+              "pdf_page": 16,
+              "quote": "12-die stack had overall yield of 56%"
+            },
+            {
+              "pdf_page": 16,
+              "quote": "Void Free Yield; Stack Count: 48 at Die 1, 27 at Die 12",
+              "locator": "原图坐标和计数目读"
+            },
+            {
+              "pdf_page": 16,
+              "quote": "After an initial particle contamination excursion"
+            }
+          ]
+        },
+        {
+          "id": "anneal-text-plot-conflict",
+          "kind": "source_conflict",
+          "claim_ids": [
+            "doc_0086822b49e2d5df8658_c007"
+          ],
+          "pdf_pages": [
+            17
+          ],
+          "summary": "正文称降至200 °C电学良率未下降；同页1-Center图在200 °C约94–95%，220/240 °C约100%，2-Right和3-Corner图约100%。图读为近似值。",
+          "usage_limit": "必须并列作者表述和图示差异，不能断言三个温度的中心阵列良率完全相同。未报告各组样本数、误差或检验，不能判断统计显著性；200 °C以下仅为后续计划。",
+          "evidence": [
+            {
+              "pdf_page": 17,
+              "quote": "No drop in electrical yield down to 200°C",
+              "locator": "正文"
+            },
+            {
+              "pdf_page": 17,
+              "quote": "1-Center electrical yield: about 94–95% at 200°C, about 100% at 220°C and 240°C",
+              "locator": "原图近似目读"
+            }
+          ],
+          "query_aliases": [
+            [
+              "adeia",
+              "退火",
+              "200"
+            ],
+            [
+              "adeia",
+              "anneal",
+              "200"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "doc_id": "doc_b9a25e99b026b40039f4",
+      "source_sha256": "b9a25e99b026b40039f42d76a32f5b8780af5a38d8c2923af082de4d907c40b2",
+      "claims_digest": "3d81d35eb374277a0850e1b07ea86d00f95e75733bec65f6410463245cec7303",
+      "qualifications": [
+        {
+          "id": "alignment-text-figure-conflict",
+          "kind": "source_conflict",
+          "claim_ids": [
+            "doc_b9a25e99b026b40039f4_c009"
+          ],
+          "pdf_pages": [
+            4
+          ],
+          "summary": "正文写错位1.82 nm，Fig. 8横向标注1.81 µm，两者冲突；图中1.76 µm是竖向标注。当前不能确定唯一正确的错位数值。",
+          "usage_limit": "并列正文和图示，不选定单值，不作为设备对准精度、性能排名或工艺能力的定量基准。原文冲突不等于抽取乱码。",
+          "evidence": [
+            {
+              "pdf_page": 4,
+              "quote": "of 1.82 nm.",
+              "locator": "正文"
+            },
+            {
+              "pdf_page": 4,
+              "quote": "1.81 µm",
+              "locator": "Fig. 8横向标注"
+            },
+            {
+              "pdf_page": 4,
+              "quote": "1.76 µm",
+              "locator": "Fig. 8竖向标注"
+            }
+          ],
+          "disputed_value": true,
+          "query_aliases": [
+            [
+              "1.82nm",
+              "Cu/polymer"
+            ],
+            [
+              "1.81µm",
+              "Cu/polymer"
+            ],
+            [
+              "1.82nm",
+              "Lee"
+            ],
+            [
+              "nc-cu/polymer",
+              "错位"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "doc_id": "journals_mi13040537",
+      "source_sha256": "5b65f4ecc79d2a01fabb8d939585ae33d619efa2d2117a53e9518f664bd9d1a3",
+      "claims_digest": "3879a8482f17fa3a886308ac0836fa268aab9b9ab868f0994f9f4ff6df054468",
+      "qualifications": [
+        {
+          "id": "sam-threshold-scale-unit-conflicts",
+          "kind": "source_conflict",
+          "claim_ids": [
+            "j036"
+          ],
+          "pdf_pages": [
+            5,
+            6
+          ],
+          "summary": "SAM检出门槛正文印为200 mm；Fig. 4另有50nm和50 mm两种标尺文字。检出门槛与图像标尺不是同一个量，均不推定其正确单位。",
+          "usage_limit": "不得自动把门槛改成200 µm，也不得把图像标尺当作检出门槛。可保留p10关于翘曲与边缘空洞的定性趋势，但不据此推导检出限或可比空洞率。",
+          "evidence": [
+            {
+              "pdf_page": 5,
+              "quote": "Using this system, we could characterize voids larger than 200 mm in size."
+            },
+            {
+              "pdf_page": 6,
+              "quote": "50nm / 50 mm",
+              "locator": "Fig. 4双标尺目读"
+            }
+          ],
+          "related_claim_only": true,
+          "query_aliases": [
+            [
+              "kim",
+              "nguyen",
+              "choa",
+              "sam"
+            ],
+            [
+              "effect of the wafer warpage on the hybrid bonding",
+              "sam"
+            ],
+            [
+              "晶圆翘曲",
+              "sam",
+              "空洞"
+            ]
+          ]
+        },
+        {
+          "id": "edge-distance-text-axis-conflict",
+          "kind": "source_conflict",
+          "claim_ids": [
+            "j036"
+          ],
+          "pdf_pages": [
+            12
+          ],
+          "summary": "正文写距晶圆边缘向内2.5 mm，Fig. 12横轴标注µm，正文与图轴单位冲突。",
+          "usage_limit": "不得将2.5导入统一边缘排除距离或跨论文排序。可保留p10的定性趋势，不能把未知单位当成已知工艺窗口。",
+          "evidence": [
+            {
+              "pdf_page": 12,
+              "quote": "distance of 2.5 mm inward from the wafer edge."
+            },
+            {
+              "pdf_page": 12,
+              "quote": "Distance from wafer edge (μm)",
+              "locator": "Fig. 12横轴"
+            }
+          ],
+          "related_claim_only": true,
+          "query_aliases": [
+            [
+              "kim",
+              "nguyen",
+              "choa",
+              "晶圆边缘"
+            ],
+            [
+              "kim",
+              "fig.12",
+              "edge"
+            ],
+            [
+              "晶圆边缘",
+              "倒角区",
+              "空洞"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "doc_id": "doc_e32cb835d14010241a5a",
+      "source_sha256": "e32cb835d14010241a5acc8bcb1ac30bb08e61bc1edbd0da13f0b2f8551f87e7",
+      "claims_digest": "a64672213c9a44ad3016f6e05bc999997b474659beea1dd49a73753f7f5f7546",
+      "qualifications": [
+        {
+          "id": "body-appendix-filter-conflict",
+          "kind": "source_conflict",
+          "claim_ids": [
+            "doc_e32cb835d14010241a5a_c002",
+            "doc_e32cb835d14010241a5a_c006",
+            "doc_e32cb835d14010241a5a_c007",
+            "doc_e32cb835d14010241a5a_c008"
+          ],
+          "pdf_pages": [
+            1,
+            2,
+            4
+          ],
+          "summary": "正文5.2规定不用滤波器；附录A.2.2的50X、NA 0.95、200×1000 µm扫描配置列S-filter 2 µm、L-filter 0.2 mm及平面校正。两种配置在同份方法中并存。",
+          "usage_limit": "说明正文规则与附录配置各自出处和情境，不能无说明拼成一套实验步骤，也不能自行宣布二者可任选或一条覆盖另一条。第2页6.2要求咨询设备制造商确定保证符合本方法的具体测量模板；实际采用哪套配置还应向方法采用方或发布方澄清，并记录条款与参数。附录参数可以如实引用。",
+          "evidence": [
+            {
+              "pdf_page": 1,
+              "quote": "No filters shall be used with this test method.",
+              "locator": "5.2"
+            },
+            {
+              "pdf_page": 4,
+              "quote": "50X, NA: 0.95; 200 x 1000 µm; S-filter: 2 µm; F-operation: Plane Correction; L-filter: 0.2 mm",
+              "locator": "A.2.2具体配置"
+            },
+            {
+              "pdf_page": 2,
+              "quote": "The equipment manufacturer should be consulted to define the specific measurement machine template needed to assure compliance with this measurement procedure.",
+              "locator": "6.2"
+            }
+          ],
+          "query_aliases": [
+            [
+              "ipc2.2.22",
+              "滤波"
+            ],
+            [
+              "2.2.22",
+              "filter"
+            ],
+            [
+              "ipc-tm-650",
+              "2.2.22",
+              "滤波"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "doc_id": "reliability_die_edge_2022",
+      "source_sha256": "8b5d03903f78d933781dc9405e47019e88b1a13ff0babfa694cf9d0cc7ccbc70",
+      "claims_digest": "62e32ab20dde94d8fbe7e199c9d435f9c3ac89bce04500b7b28e1f6390a5f99b",
+      "qualifications": [
+        {
+          "id": "representative-eight-die-photo",
+          "kind": "source_limit",
+          "claim_ids": [],
+          "pdf_pages": [
+            2
+          ],
+          "summary": "Theil 2022第2页Fig. 1的原图注明确写为代表性的DBI键合8芯片堆叠照片。",
+          "usage_limit": "该照片不是12层的原始图证。与Adeia 2023第16页照片视觉上相同属于跨来源比对推断，应同时引用两处并说明推断性质；两文未明示照片复用关系、试验样品身份或12层数据来自8层试验。",
+          "evidence": [
+            {
+              "pdf_page": 2,
+              "quote": "Photograph of a representative DBI bonded 8-die stack.",
+              "locator": "Fig. 1 caption"
+            }
+          ],
+          "query_aliases": [
+            [
+              "12层",
+              "56%",
+              "照片"
+            ],
+            [
+              "12芯片",
+              "照片"
+            ],
+            [
+              "Adeia",
+              "堆叠",
+              "照片"
+            ],
+            [
+              "12-die",
+              "photograph"
+            ],
+            [
+              "Theil",
+              "8",
+              "照片"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "doc_id": "reliability_gao_d2w_2021",
+      "source_sha256": "1a2e32bba2fcdb48b921a0118b6bcd19ab34e44f9d26b4a94ae812e2fa1b0fd9",
+      "claims_digest": "6fb4680a2000f46ef36565a2fe0fa66d1321a2b085a6f554dddd032437a9ec64",
+      "qualifications": [
+        {
+          "id": "per-layer-versus-compound-yield",
+          "kind": "source_limit",
+          "claim_ids": [
+            "r002",
+            "r003"
+          ],
+          "pdf_pages": [
+            3
+          ],
+          "summary": "该页分别给出逐层无空洞良率的计算、整叠累计无空洞良率60%、中心主TSV链电测良率66%，三种指标必须按原句分别理解。",
+          "usage_limit": "“无空洞die数除以总键合die数”的原句主语明确为per-layer yield，只支持每层计算。该段对整叠仅报告compound void-free yield为60%，没有给出单独的整叠计数或计算过程。不得把per-layer算法接到60%，也不能把每层独立和乘积公式当作本文已验证方法。只问60%与66%各是什么时，分别说明整叠CSAM无空洞与中心菊链电测口径，避免附加未被问到或未有同指标依据的计算细节。",
+          "evidence": [
+            {
+              "pdf_page": 3,
+              "quote": "The per-layer yield is calculated by counting all void-free die and dividing the number by the total number of die bonded.",
+              "locator": "C. Assembly Yield，每层指标"
+            },
+            {
+              "pdf_page": 3,
+              "quote": "The compound void-free yield for the entire stack is 60%.",
+              "locator": "整叠累计指标"
+            },
+            {
+              "pdf_page": 3,
+              "quote": "Resistivity measurement on the main TSV chain in the center area of the die with >47,000 interconnects through the 5-layer stack resulted in test yield of 66%.",
+              "locator": "中心主TSV链电测指标"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

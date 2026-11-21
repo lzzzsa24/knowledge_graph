@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "items": {
+    "cmp-optical-recess-release-transfer": {
+      "first_step": "若已有同坐标光学与 AFM 数据，先整批留出复算错放率。",
+      "needs": [
+        "跨批 PSI / AFM 原始数据",
+        "暴露记录",
+        "可靠高度参考"
+      ],
+      "sources": [
+        {
+          "doc_id": "reliability_optical_topography_2024",
+          "pdf_page": 3
+        },
+        {
+          "doc_id": "doc_16ed5cb65a19c8d403a3",
+          "pdf_page": 6
+        }
+      ],
+      "protocol_sha256": "cfaca54b42e23ff2556c88449d076c6c988d756a3f34f27e54e18460278f99c3"
+    },
+    "polyimide-water-edge-voids": {
+      "first_step": "先在同配方聚酰亚胺无源片上确认释出的水能测准，再比较铜图形附近的空洞。",
+      "needs": [
+        "无源聚酰亚胺图形片",
+        "湿度调理与退火",
+        "释气质谱",
+        "超声扫描 C-SAM"
+      ],
+      "sources": [
+        {
+          "doc_id": "doc_da437a1a4b57324f3fcd",
+          "pdf_page": 6
+        }
+      ],
+      "protocol_sha256": "6f22e6b9e6eaa7f1a2f7016d6ba5f2694e4735dc18d481434396368063ba092d"
+    },
+    "recovered-die-cleaning-edge-cycling": {
+      "first_step": "先用机械夹具拆取无源菊花链裸片，统计能完整回收多少颗，再安排温循。",
+      "needs": [
+        "无源菊花链",
+        "机械拆片夹具",
+        "带坐标电测",
+        "温度循环"
+      ],
+      "sources": [
+        {
+          "doc_id": "reliability_rework_2026",
+          "pdf_page": 4
+        },
+        {
+          "doc_id": "reliability_die_edge_2022",
+          "pdf_page": 6
+        }
+      ],
+      "protocol_sha256": "73d8b25f621b131ce8dc87fc81328e08e261b2e86094798fe757cdfc5046adfd"
+    },
+    "ti-passivation-edge-tddb": {
+      "first_step": "先用同版有 Ti、无 Ti 试片找到两组均能成键的退火窗口，再安排恒压寿命测试。",
+      "needs": [
+        "同版有 Ti / 无 Ti 试片",
+        "可追溯 Ti 膜厚",
+        "退火",
+        "高温恒压寿命测量"
+      ],
+      "sources": [
+        {
+          "doc_id": "journals_s44172-026-00649-w",
+          "pdf_page": 10
+        },
+        {
+          "doc_id": "doc_f8d89134978354a064a0",
+          "pdf_page": 5
+        }
+      ],
+      "protocol_sha256": "f3c2073660ef0f31cff5c502b1b7f8cbe979d46a60f59850acb2d8d1754226a6"
+    },
+    "dicing-tape-filtered-clean-carryover": {
+      "first_step": "先查清洗回流图与阀位日志，确认前后批共用滤后液，再做隔离无源片试验。",
+      "needs": [
+        "回流图与工艺日志",
+        "隔离清洗回路",
+        "无源氧化硅片",
+        "颗粒及有机物检测"
+      ],
+      "sources": [
+        {
+          "doc_id": "doc_d7e552c4a90e5dc2de41",
+          "pdf_page": 8
+        },
+        {
+          "doc_id": "doc_d7e552c4a90e5dc2de41",
+          "pdf_page": 13
+        }
+      ],
+      "protocol_sha256": "666918becc5e5cf2a059ceb0b498888bad81b376c366b5e96869a13f34e1fde9"
+    }
+  }
+}

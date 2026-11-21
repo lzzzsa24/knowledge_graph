@@ -1,0 +1,13 @@
+{
+  "project": "hybrid-bonding-independent-pilot",
+  "start_date": "2026-11-02",
+  "target_fulltexts_min": 20,
+  "target_fulltexts_max": 30,
+  "core_scope": ["Cu/dielectric hybrid bonding", "Cu/SiO2", "Cu/SiCN", "surface preparation", "CMP", "surface activation", "contact bonding", "post-bond annealing", "electrical performance", "bond strength", "reliability"],
+  "exclude": ["unrelated hybrid bonding terminology", "metadata-only counted as full text", "ordinary Cu-Cu thermocompression without a documented connection to hybrid bonding"],
+  "review_policy": "retain reviews as background; do not count their retelling as independent experimental evidence",
+  "max_download_retries": 2,
+  "model_access": "no API credentials found in current process; agent-assisted extraction available",
+  "review_label": "automated_agent_review_not_human_gold",
+  "raw_evidence_required": true
+}

@@ -1,0 +1,6 @@
+{
+  "imec_02": {"scope": "component_process_demonstration", "scope_note": "Full-text abstract describes direct dielectric D2W demonstration on SiCN; relevant preparation workflow, not a complete electrically verified Cu hybrid interconnect result."},
+  "imec_05": {"scope": "component_dielectric_measurement", "scope_note": "Full-text test vehicle uses 100 nm thermally oxidized SiO2 direct bonding; retained as bond-strength metrology support."},
+  "journals_mi13040537": {"scope": "core_hybrid_bonding", "scope_note": "Full-text methods explicitly describe 300 mm Cu-pad/silicon-nitride hybrid bonding wafers."},
+  "journals_nano15201600": {"scope": "core_hybrid_special_interface", "scope_note": "Full text demonstrates Cu/MoS2/Cu with SiCN hybrid bonding; special conductive-filament mechanism is retained explicitly."}
+}

@@ -1,0 +1,27 @@
+[project]
+name = "hybrid-bonding-pilot"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+description = "Source-grounded independent hybrid bonding literature pilot"
+dependencies = [
+  "pymupdf==2.0", "pydantic==2.14.2", "pint==0.26.2", "networkx==3.7",
+  "qdrant-client==1.20.0", "docling==2.145.0", "mineru==3.4.5",
+  "raganything==1.4.4", "lightrag-hku==1.4.16", "sentence-transformers==5.7.0",
+  "transformers==4.57.6", "torch==2.15.0+cpu", "streamlit==1.66.1",
+  "httpx==0.28.1", "pandas==2.3.3", "pytest==9.2.0",
+  "fastapi==0.162.0", "uvicorn==0.54.0", "markdown-it-py==4.2.0", "mcp==2.3.0",
+  "psutil==7.2.2"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }

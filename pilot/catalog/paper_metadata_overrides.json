@@ -1,0 +1,846 @@
+{
+  "schema_version": 1,
+  "documents": {
+    "journals_ma15051888": {
+      "sha256": "9c5c1dea15f5b717e71f0a21819ce9cc4f4d7f0b74edbb9111df5699ba3e74e9",
+      "authors": [
+        "Jia-Juen Ong",
+        "Wei-Lan Chiu",
+        "Ou-Hsiang Lee",
+        "Chia-Wen Chiang",
+        "Hsiang-Hung Chang",
+        "Chin-Hung Wang",
+        "Kai-Cheng Shie",
+        "Shih-Chi Yang",
+        "Dinh-Phuc Tran",
+        "King-Ning Tu",
+        "Chih Chen"
+      ],
+      "reason": "原字段为缩写字符串，以 PDF 首页完整署名还原。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Jia-Juen Ong 1,2, Wei-Lan Chiu 3"
+        }
+      ]
+    },
+    "journals_ma18225152": {
+      "sha256": "f29bf05e467638f96114634510d76c855637d4b60764f53aa68693bc87921474",
+      "authors": [
+        "Yiming Hao",
+        "Si Chen",
+        "Chao Li",
+        "Zejian Chen",
+        "Fei Qin",
+        "Pei Chen",
+        "Renjie Tian",
+        "Ziyang Li"
+      ],
+      "reason": "原字段为缩写字符串，以 PDF 首页完整署名还原。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Yiming Hao 1,2, Si Chen 2,*, Chao Li 2"
+        }
+      ]
+    },
+    "journals_mi13040537": {
+      "sha256": "5b65f4ecc79d2a01fabb8d939585ae33d619efa2d2117a53e9518f664bd9d1a3",
+      "authors": [
+        "Yeoun-Soo Kim",
+        "Thanh Hai Nguyen",
+        "Sung-Hoon Choa"
+      ],
+      "reason": "原字段为缩写字符串，以 PDF 首页完整署名还原。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Yeoun-Soo Kim 1, Thanh Hai Nguyen 2 and Sung-Hoon Choa 1,2,*"
+        }
+      ]
+    },
+    "journals_mi15111332": {
+      "sha256": "1e735e264da2f8a05701e9c5d1a03cce9c6679c3d604e747a8c8e57ae009b97c",
+      "authors": [
+        "Xuan-Bach Le",
+        "Sung-Hoon Choa"
+      ],
+      "reason": "原字段为缩写字符串，以 PDF 首页完整署名还原。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Xuan-Bach Le 1 and Sung-Hoon Choa 2,*"
+        }
+      ]
+    },
+    "journals_nano15201600": {
+      "sha256": "8552ff524cee089235d0fad05233f96f4b6901d8a7e713a31a9f01388b0cc8ca",
+      "authors": [
+        "Hyunbin Choi",
+        "Kyungman Kim",
+        "Sihoon Son",
+        "Dongho Lee",
+        "Seongyun Je",
+        "Jieun Kang",
+        "Sunjae Jeong",
+        "Doo San Kim",
+        "Minjong Lee",
+        "Jiyoung Kim",
+        "Taesung Kim"
+      ],
+      "reason": "原字段为缩写字符串，以 PDF 首页完整署名还原。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Hyunbin Choi 1,†, Kyungman Kim 2,3,†, Sihoon Son 2,3,†"
+        }
+      ]
+    },
+    "journals_s44172-026-00649-w": {
+      "sha256": "eafb02e04d89da19107f5fc5fa0a29cebc442ee799504efdaa16407efbd9881a",
+      "authors": [
+        "Hemanth Kumar Cheemalamarri",
+        "Masahisa Fujino",
+        "Tanmay Ghosh",
+        "Ratan Bhimrao Umralkar",
+        "Chandra Rao B.S.S",
+        "Navab Singh",
+        "Srinivasa Rao Vempati"
+      ],
+      "reason": "原字段为缩写字符串，PDF 首页确认 B.S.S 属于 Chandra Rao 同一人。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Chandra Rao B.S.S1, Navab Singh1 & Srinivasa Rao Vempati1"
+        }
+      ]
+    },
+    "journals_smsc.202500271": {
+      "sha256": "c16978c3bf08750131ff13278238208a185e92471c73c38f7eceb9cab324440e",
+      "authors": [
+        "Zambaga Otgonbayar",
+        "Jungchul Noh",
+        "Seong-Ho Yoon",
+        "Gyu-Sik Park",
+        "Suk Jekal",
+        "Jiwon Kim",
+        "Jeong-Hwan Lee",
+        "Rino Choi",
+        "Jeonghun Kim",
+        "Myeongjin Kim",
+        "Chang-Min Yoon"
+      ],
+      "reason": "原字段为缩写字符串，以 PDF 首页完整署名还原。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Zambaga Otgonbayar, Jungchul Noh, Seong-Ho Yoon, Gyu-Sik Park, Suk Jekal"
+        }
+      ]
+    },
+    "reliability_cnn_defects_2024": {
+      "sha256": "4e6fc3cde9d509f85b9d34231294023db5c5201308ce32b1090a9154f2226793",
+      "authors": [
+        "Oliver Zhao",
+        "Dominik Suwito",
+        "Bongsub Lee",
+        "Thomas Workman",
+        "Laura Mirkarimi"
+      ],
+      "reason": "按 PDF 第 1 页署名逐一录入。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Yield Oliver Zhao Adeia, Inc."
+        }
+      ]
+    },
+    "reliability_die_edge_2022": {
+      "sha256": "8b5d03903f78d933781dc9405e47019e88b1a13ff0babfa694cf9d0cc7ccbc70",
+      "authors": [
+        "Jeremy A. Theil",
+        "Thomas Workman",
+        "Dominik Suwito",
+        "Laura Mirkarimi",
+        "Gill Fountain",
+        "KM Bang",
+        "Guilian Gao",
+        "Bongsub Lee",
+        "Pawel Mrozek",
+        "Cyprian Uzoh",
+        "Michael Huynh",
+        "Oliver Zhao"
+      ],
+      "reason": "按 PDF 第 1 页署名逐一录入。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Jeremy A. Theil, Thomas Workman, Dominik Suwito, Laura Mirkarimi, Gill Fountain, KM Bang, Guilian Gao, Bongsub Lee, Pawel Mrozek, Cyprian Uzoh, Michael Huynh, and Oliver Zhao"
+        }
+      ]
+    },
+    "reliability_fine_pitch_2021": {
+      "sha256": "b2055a26cec675af05d64af42034ae9cb1409432072e1beab048964f609ddddc",
+      "authors": [
+        "Thomas Workman",
+        "Laura Mirkarimi",
+        "Jeremy Theil",
+        "Gill Fountain",
+        "KM Bang",
+        "Bongsub Lee",
+        "Cyprian Uzoh",
+        "Dominik Suwito",
+        "Guilian Gao",
+        "Pawel Mrozek"
+      ],
+      "reason": "按 PDF 第 1 页署名逐一录入。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Considerations Thomas Workman Invensas"
+        }
+      ]
+    },
+    "reliability_gao_d2w_2021": {
+      "sha256": "1a2e32bba2fcdb48b921a0118b6bcd19ab34e44f9d26b4a94ae812e2fa1b0fd9",
+      "authors": [
+        "Guilian Gao",
+        "Laura Mirkarimi",
+        "Gill Fountain",
+        "Dominik Suwito",
+        "Jeremy Theil",
+        "Thomas Workman",
+        "Cyprian Uzoh",
+        "Gabe Guevara",
+        "Bongsub Lee",
+        "Michael Huyhn",
+        "Pawel Mrozek"
+      ],
+      "reason": "按 PDF 首页和 DOI 登记的作者顺序及拼写录入。该文原署名为 Michael Huyhn。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Stacking Applications Guilian Gao Invensas"
+        }
+      ]
+    },
+    "reliability_optical_topography_2024": {
+      "sha256": "14b4b4268018c21c8abd1866e3ec0f84f11a676b1441addc94c07f12e9cb5249",
+      "authors": [
+        "Bongsub Lee",
+        "Oliver Zhao",
+        "Arianna Avellán",
+        "Suhail Sadiq",
+        "Gill Fountain",
+        "Dominik Suwito",
+        "Guilian Gao",
+        "Laura Mirkarimi"
+      ],
+      "reason": "按 PDF 第 1 页署名逐一录入。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Interferometry Bongsub Lee Adeia Inc."
+        }
+      ]
+    },
+    "reliability_review_thermal_2025": {
+      "sha256": "11f3ba5a4e607337f7bd0b36f56ce279c0696cf03e8422cd8e0761c417ca77ac",
+      "authors": [
+        "Seung-Hoon Lee",
+        "Su-Jong Kim",
+        "Ji-Su Lee",
+        "Seok-Ho Rhi"
+      ],
+      "reason": "按 PDF 第 1 页署名逐一录入。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Seung-Hoon Lee, Su-Jong Kim †, Ji-Su Lee † and Seok-Ho Rhi *"
+        }
+      ]
+    },
+    "reliability_review_thermocompression_hybrid_2023": {
+      "sha256": "21554b637c8563895a3b15f3cc1dfb4b71d44887eacd25523e59f3f84f3afd79",
+      "authors": [
+        "Yuan-Chiu Huang",
+        "Yu-Xian Lin",
+        "Chien-Kang Hsiung",
+        "Tzu-Heng Hung",
+        "Kuan-Neng Chen"
+      ],
+      "reason": "按 PDF 第 1 页署名逐一录入。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Yuan-Chiu Huang 1, Yu-Xian Lin 1, Chien-Kang Hsiung 2, Tzu-Heng Hung 1 and Kuan-Neng Chen"
+        }
+      ]
+    },
+    "reliability_rework_2026": {
+      "sha256": "3a317bd0fcef33c00979d7242abee8b05ea06767bdb7859000f08b794b7d2a87",
+      "authors": [
+        "Rajan Gangadharan",
+        "Dominik Suwito",
+        "Thomas Workman",
+        "Cyprian Uzoh",
+        "Justin Chen",
+        "Pawel Mrozek",
+        "Arianna Avellan",
+        "Suhail Sadiq",
+        "Laura Mirkarimi"
+      ],
+      "reason": "按 PDF 第 1 页署名逐一录入。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Reworkable Die-to-Wafer Hybrid Bonding Process Rajan Gangadharan Adeia Inc"
+        }
+      ]
+    },
+    "reliability_small_die_2022": {
+      "sha256": "fc5a079fe3ac8d6121ba313088955e7b665a761071dbf3d9ebf7673f0132ae23",
+      "authors": [
+        "Guilian Gao",
+        "Laura Mirkarimi",
+        "Gill Fountain",
+        "Dominik Suwito",
+        "Jeremy Theil",
+        "Thomas Workman",
+        "Cyprian Uzoh",
+        "Bongsub Lee",
+        "K.M. Bang",
+        "Gabe Guevara"
+      ],
+      "reason": "本地 PDF 首页文字编码乱码，使用 DOI 内容协商返回的出版者登记作者。",
+      "evidence": [
+        {
+          "kind": "publisher_metadata",
+          "url": "https://doi.org/10.1109/ECTC51906.2022.00310"
+        }
+      ]
+    },
+    "reliability_yap_yield_2025": {
+      "sha256": "ee7500913dcde4528733357496b8689d2b522dd7a52163bf3bdfd2e96990c938",
+      "authors": [
+        "Zhichao Chen",
+        "Puneet Gupta"
+      ],
+      "reason": "首页署名中 Fellow, IEEE 是资历。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Zhichao Chen, Puneet Gupta, Fellow, IEEE"
+        }
+      ]
+    },
+    "doc_52e8ecc5784ec65017bc": {
+      "sha256": "52e8ecc5784ec65017bc080577c94e3e5137b9c4399ce0dacd373c97e758c703",
+      "authors": [],
+      "organization": "MKS Instruments",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 6,
+          "quote": "©2025 MKS Instruments, Inc."
+        }
+      ]
+    },
+    "doc_97037e858ee75d45bd33": {
+      "sha256": "97037e858ee75d45bd33835079700d53ec77fec1b287836297cfbe6aa0f55626",
+      "authors": [],
+      "organization": "NHanced Semiconductors",
+      "reason": "白皮书署名为公司。PDF 属性中的内部用户名未用于作者。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 2,
+          "quote": "NHanced Semiconductors, Inc. 14 April 2025"
+        }
+      ]
+    },
+    "doc_37f8496745bd913db74a": {
+      "sha256": "37f8496745bd913db74ad5339e4719685d36d58756d3dba12921d22338d34aae",
+      "authors": [],
+      "organization": "Automotive Electronics Council",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Component Technical Committee Autom otive Electronics Council"
+        }
+      ]
+    },
+    "doc_84e375f077d18f647b0e": {
+      "sha256": "84e375f077d18f647b0ebf41757b8e0ce64a793beea8c24b03f6bcb47baca14f",
+      "label_year": 2022,
+      "reason": "KU Leuven 正式出版记录给出 2022 年，年份只用于短标签。",
+      "evidence": [
+        {
+          "kind": "publisher_metadata",
+          "url": "https://lirias.kuleuven.be/4004803",
+          "quote": "Publication date: 2022-11-01"
+        }
+      ]
+    },
+    "doc_b2f35c30b93b2e15bbb6": {
+      "sha256": "b2f35c30b93b2e15bbb61d7369a29699f35fef3302da6861c97c20310d5866b8",
+      "authors": [],
+      "organization": "Nearfield Instruments",
+      "label_year": 2026,
+      "reason": "白皮书无个人署名。Nearfield 官网给出发布日，年份只用于短标签。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 8,
+          "quote": "nearfieldinstruments.com"
+        },
+        {
+          "kind": "publisher_metadata",
+          "url": "https://www.nearfieldinstruments.com/portfolio/metrology-challenges-in-hybrid-bonding-enabling-the-next-era-of-3d-integration/",
+          "quote": "Posted on 16/01/2026"
+        }
+      ]
+    },
+    "doc_4fe327d6884c4dd3daa7": {
+      "sha256": "4fe327d6884c4dd3daa745c3ca4dba20992e731c84659486f753f94901cb4cc4",
+      "label_year": 2023,
+      "reason": "Onto Innovation 官方 PDF 文件名给出 2023 年年鉴版本，年份只用于短标签。",
+      "evidence": [
+        {
+          "kind": "publisher_metadata",
+          "url": "https://ontoinnovation.com/wp-content/uploads/2025/08/The-Age-of-Hybrid-Bonding_3DIC_Yearbook_2023.pdf"
+        },
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "By Monita Pau, Onto Innovation"
+        }
+      ]
+    },
+    "doc_d002979c2eca6e55934f": {
+      "sha256": "d002979c2eca6e55934f2ba23c48ece9cd659c4b79d48de5e0abf39523845117",
+      "authors": [],
+      "organization": "DISCO",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "DISCO CORPORATION All rights reserved Tech Briefing 2024 December 2024"
+        }
+      ]
+    },
+    "doc_98a0b493985955f86faf": {
+      "sha256": "98a0b493985955f86fafae2be5eea59c5e6625653d013a9db26ecbd37636c298",
+      "authors": [
+        "Andrea Chacko",
+        "Dongshun Bai"
+      ],
+      "reason": "PDF 为 Brewer Science 幻灯片，活动主办方将相同标题的报告列在两位 Brewer Science 演讲者名下。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "© 2024 Brewer Science, Inc."
+        },
+        {
+          "kind": "publisher_metadata",
+          "url": "https://www.semi.org/en/event/heterogeneous-integration-finds-its-place",
+          "quote": "Andrea Chacko, PhD; Dongshun Bai, PhD"
+        }
+      ]
+    },
+    "doc_6b234f22a6ce8b2848d6": {
+      "sha256": "6b234f22a6ce8b2848d60109db4c50e3d5a53c767ef13b8d4cbb0195a3bc2b66",
+      "authors": [],
+      "organization": "IEEE ECTC",
+      "reason": "会议资料是多位演讲者的合辑。主持人、共同主席和各节报告人属于不同角色，整份合辑按会议机构著录。PDF 第 2 页与会议官网确认 2025 年。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "IEEE Electronics Packaging Society",
+          "visual": true
+        },
+        {
+          "kind": "pdf",
+          "page": 2,
+          "quote": "2025 IEEE 75th Electronic Components and Technology Conference"
+        },
+        {
+          "kind": "publisher_metadata",
+          "url": "https://ectc.net/75th-ectc-highlights/"
+        }
+      ]
+    },
+    "doc_c83c736675187385e3c1": {
+      "sha256": "c83c736675187385e3c1d5723882cc87d68938806cf41af5a8742713953bfb4d",
+      "authors": [
+        "Volley Wang"
+      ],
+      "reason": "首页文字层乱码。目检封面确认 DuPont 和题名，AVS 官方会议目录指向同一 PDF 并列出报告者 Volley Wang。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "DuPont Electronics & Industrial",
+          "visual": true
+        },
+        {
+          "kind": "publisher_metadata",
+          "url": "https://nccavs-usergroups.avs.org/proceedings_cmpug/",
+          "quote": "Tailoring Cleaning Solutions for Advanced Packaging Needs, Volley Wang"
+        }
+      ]
+    },
+    "doc_32aa88a2d26763b93e33": {
+      "sha256": "32aa88a2d26763b93e33753acb6ae3d2f857560e3d49759dc2ab1e7470ef271f",
+      "authors": [],
+      "organization": "EV Group",
+      "reason": "本 PDF 为 EV Group 白皮书。末页注明内容源自 2023 年行业年鉴。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 4,
+          "quote": "EV Group - DI Erich Thallner Strasse 1"
+        }
+      ]
+    },
+    "doc_95bd48f16b2d6af54cd1": {
+      "sha256": "95bd48f16b2d6af54cd1c73fcc8e9a48fdebe217c0a32b18162eef51970b118a",
+      "authors": [],
+      "organization": "EV Group",
+      "reason": "厂商产品手册无个人署名。版本标记和文件生成时间未视为发布日期。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "EV GROUP® | Products // Bonding // Hybrid and Fusion Bonding"
+        }
+      ]
+    },
+    "doc_a78fa8239dd3503da6b4": {
+      "sha256": "a78fa8239dd3503da6b4ed29f6a23102cb60f7bb320d1fe9e276f77513f88b95",
+      "authors": [],
+      "organization": "EV Group",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "EV Group Europe & Asia/Pacific GmbH"
+        }
+      ]
+    },
+    "doc_a0dbd400adb244ee27fe": {
+      "sha256": "a0dbd400adb244ee27fef0919f12621c63d1d2f492355b8460af1f48a914fbad",
+      "authors": [],
+      "organization": "EV Group",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "EV Group Europe & Asia/Pacific GmbH"
+        }
+      ]
+    },
+    "doc_31b3d262ec8610afde07": {
+      "sha256": "31b3d262ec8610afde0711b077272a0a096163fbf944f130f5c366521bb94f78",
+      "authors": [],
+      "organization": "Yield Engineering Systems",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Yield Engineering Systems, Inc."
+        }
+      ]
+    },
+    "doc_da376679b0a57e09a588": {
+      "sha256": "da376679b0a57e09a58816edaa11d243901de5da509b263ce0edc16f515abeee",
+      "authors": [],
+      "organization": "SUSS",
+      "reason": "SUSS 发布的产品页首列合作方 Smart Equipment Technology。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "SUSS XBC300 Gen2 D2W/W2W"
+        }
+      ]
+    },
+    "doc_de8e6157b66afc837de9": {
+      "sha256": "de8e6157b66afc837de90539ff6f7417824c328d9a87f78833845526e326ddb2",
+      "authors": [],
+      "organization": "ZEISS",
+      "reason": "原文第 2 页说明是 ZEISS 汇编，分章作者并非整份资料署名。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "ZEISS 3D X-ray Microscopy and LaserFIB"
+        }
+      ]
+    },
+    "doc_09c97ed377db45631b3b": {
+      "sha256": "09c97ed377db45631b3b40ffa2f127bf2c82320009d3f88f8b76491645ef964b",
+      "label_year": 2019,
+      "reason": "会务方发布的 2019 年 SPCC 演示文稿，年份只用于短标签。",
+      "evidence": [
+        {
+          "kind": "publisher_metadata",
+          "url": "https://www.linx-consulting.com/wp-content/uploads/2019/04/01-13-C_Lorant-imec-Improving_cleaning_for_adv_packaging.pdf",
+          "quote": "SPCC_2019_improving_cleaning_for_3D"
+        }
+      ]
+    },
+    "doc_63f35066729869ff88d9": {
+      "sha256": "63f35066729869ff88d94bc5edc699972ea786e1c74f6a9dabbe006751b4cb2a",
+      "authors": [],
+      "organization": "EV Group",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "EV GROUP® | Products // Temporary Bonding and Debonding Systems"
+        }
+      ]
+    },
+    "doc_aafbbc0171d017de2b61": {
+      "sha256": "aafbbc0171d017de2b61396e6b9bada41d7fbf8cbcdc04615e8fbe8971fa5a49",
+      "authors": [],
+      "organization": "Automotive Electronics Council",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Component Technical Committee Autom otive Electronics Council"
+        }
+      ]
+    },
+    "doc_9ae56922a8672602a72f": {
+      "sha256": "9ae56922a8672602a72fbc6dd4c86a0bd4550ad007f3bad5e88348e63efb9a7e",
+      "authors": [],
+      "organization": "IPC",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "IPC disclaims all liability"
+        }
+      ]
+    },
+    "doc_35fe246f78499f8125de": {
+      "sha256": "35fe246f78499f8125deef013f73bed21c847070b41f6150d9c3a4a6ecc7f9eb",
+      "authors": [],
+      "organization": "EV Group",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "EV GROUP® | Products // Metrology"
+        }
+      ]
+    },
+    "doc_aedd7cb34d12ef15b799": {
+      "sha256": "aedd7cb34d12ef15b799ed9a0f6326840a4551ddc7c6600732c6ae82ab6e93b6",
+      "authors": [
+        "Yaw Obeng",
+        "Elisabeth Mansfield",
+        "Albert Davydov",
+        "Bryan Barnes",
+        "Andras Vladar"
+      ],
+      "reason": "按 NIST 出版记录列明的作者著录。目录年 2024 是 IEEE 路线图版次，NIST 网页记录发表于 2025。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 2,
+          "quote": "THE INTERNATIONAL ROADMAP FOR DEVICES AND SYSTEMS: 2024 COPYRIGHT © 2024 IEEE."
+        },
+        {
+          "kind": "publisher_metadata",
+          "url": "https://www.nist.gov/publications/international-roadmap-devices-and-systems-tm-2024-metrology",
+          "quote": "Yaw Obeng, Elisabeth Mansfield, Albert Davydov, Bryan Barnes, Andras Vladar"
+        }
+      ]
+    },
+    "doc_3dd3e0e65c25d93c3422": {
+      "sha256": "3dd3e0e65c25d93c342253bb2a785d90653a2745098e185308638ba8e48825f3",
+      "authors": [],
+      "organization": "IEEE EPS",
+      "reason": "路线图章节无正式作者署名，末页的 Paul Wesling 为编辑。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "For updates, visit http://eps.ieee.org/hir"
+        }
+      ]
+    },
+    "doc_b21dd188ca8d6294ee49": {
+      "sha256": "b21dd188ca8d6294ee49791ea037c23e34b4fe74e3850f875294cc7c62cdae51",
+      "authors": [],
+      "organization": "IEEE EPS",
+      "reason": "第 2 页列出 Key Contributors 及工作组主席，未给出正式作者署名。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "For updates, visit eps.ieee.org/hir"
+        }
+      ]
+    },
+    "doc_b92ccd88770cdbf948b5": {
+      "sha256": "b92ccd88770cdbf948b56816a96e7af4651906801d395ae8a774578b5dffba96",
+      "authors": [],
+      "organization": "IPC",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "IPC disclaims all liability"
+        }
+      ]
+    },
+    "doc_e32cb835d14010241a5a": {
+      "sha256": "e32cb835d14010241a5acc8bcb1ac30bb08e61bc1edbd0da13f0b2f8551f87e7",
+      "authors": [],
+      "organization": "IPC",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "IPC disclaims all liability"
+        }
+      ]
+    },
+    "doc_7579ca8beec490bdcc89": {
+      "sha256": "7579ca8beec490bdcc890d7f46e825fedddbd5a5d25aa45019c74a858ac7001b",
+      "authors": [],
+      "organization": "SET",
+      "reason": "SET 产品目录。末页其他姓名属于照片署名。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 16,
+          "quote": "www.set-sas.fr October 2025"
+        }
+      ]
+    },
+    "doc_96cade49aaa9e87f166d": {
+      "sha256": "96cade49aaa9e87f166d604f9828e795c79adbee9cd1c75655e1ca7d1ab0e86b",
+      "authors": [
+        "SCANNELL, Mark",
+        "VOIRON, Frédéric"
+      ],
+      "reason": "欧洲专利申请首页的第 72 项列出两位发明人，作者字段记录发明人。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "(72) Inventors: • SCANNELL, Mark"
+        }
+      ]
+    },
+    "doc_fe5ef6af1545ccfe67bb": {
+      "sha256": "fe5ef6af1545ccfe67bb5f3e577b0368d50452514d4520f05f0a33b47ef96931",
+      "family_name": "小山",
+      "reason": "日文原名未分词。PDF 首页的姓名间距与 J-STAGE 的 Shinji Koyama 一致。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "小 山 真 司"
+        },
+        {
+          "kind": "publisher_metadata",
+          "url": "https://www.jstage.jst.go.jp/article/jic/61/1/61_244/_article/-char/en",
+          "quote": "Shinji Koyama"
+        }
+      ]
+    },
+    "doc_0f671a22d6f00dcc3195": {
+      "sha256": "0f671a22d6f00dcc3195e256580a7cdec75d475528801d7340f34f54dd20eca4",
+      "family_name": "Kawai Pétillot",
+      "reason": "首页页眉给出复姓 Kawai Pétillot。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Kawai Pétillot et al.: Effects of Surface Composition on Cu-Cu Bonding Strength"
+        }
+      ]
+    },
+    "doc_0596f8392fed699deb6e": {
+      "sha256": "0596f8392fed699deb6e3c82a6e0ea53e3fc2d33849c1ba78e5c56909bc5c53d",
+      "authors": [],
+      "organization": "SET",
+      "reason": "SET 产品数据表，官网同名 NEO HB 产品页确认厂商。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "Production equipment for Hybrid Bonding"
+        },
+        {
+          "kind": "publisher_metadata",
+          "url": "https://set-sas.fr/catalog/neo-hb/"
+        }
+      ]
+    },
+    "doc_8451afcd019fe12c35a6": {
+      "sha256": "8451afcd019fe12c35a6448b47a0ad8cff24a1bf0afcc5adc720dfc678ae0264",
+      "authors": [],
+      "organization": "ONTOSIS Equipment Systems",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 1,
+          "quote": "ONTOSIS Equipment Systems Corporation"
+        }
+      ]
+    },
+    "doc_7bab9ceff2c2ddfc00d7": {
+      "sha256": "7bab9ceff2c2ddfc00d7bdb53ca8e27d136f4eab4c5843e2f5bc905941e37b6f",
+      "authors": [],
+      "organization": "Intel",
+      "reason": "资料由机构署名发布。",
+      "evidence": [
+        {
+          "kind": "pdf",
+          "page": 4,
+          "quote": "© Intel Corporation."
+        }
+      ]
+    }
+  }
+}

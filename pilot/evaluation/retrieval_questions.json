@@ -1,0 +1,343 @@
+[
+  {
+    "id": "q01",
+    "question_zh": "对于具有(111)择优取向的纳米孪晶Cu/SiO2接头，交叉条Kelvin结构得到的比接触电阻是多少？同文普通Kelvin结构的平均电阻能否直接当作这个数值？",
+    "query_en": "In nanotwinned (111)-oriented Cu/SiO2 hybrid bonds, what specific contact resistance was measured with a crossbar Kelvin structure, and how does it differ from the ordinary Kelvin resistance measurement?",
+    "expected_doc_ids": [
+      "journals_ma15051888"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "journals_ma15051888",
+        "pdf_page": 7
+      }
+    ],
+    "required_conditions": [
+      "区分普通Kelvin平均6.7 mΩ与交叉条结构平均1.5 mΩ。",
+      "交叉条接触面积10×8 µm²，比接触电阻1.2×10^-9 Ω·cm²，各测50个结构/接头。",
+      "单位和接触面积必须随数值保留，不把普通电阻直接当作比接触电阻。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q02",
+    "question_zh": "Cu/SiO2接头在一次退火之后再进行更高温的二次退火，屈服强度怎样变化？这些参数来自直接拉伸试验，还是由其他测量与模型共同确定？",
+    "query_en": "How does secondary annealing change the yield strength of Cu joints in Cu/SiO2 hybrid bonding, and were the constitutive parameters obtained by tensile testing or by nanoindentation with inverse finite element analysis?",
+    "expected_doc_ids": [
+      "journals_ma18225152"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "journals_ma18225152",
+        "pdf_page": 2
+      },
+      {
+        "doc_id": "journals_ma18225152",
+        "pdf_page": 5
+      },
+      {
+        "doc_id": "journals_ma18225152",
+        "pdf_page": 8
+      }
+    ],
+    "required_conditions": [
+      "一次退火300°C，二次退火分别350°C和400°C；不能把两者当成初次接触温度。",
+      "屈服强度由70.52 MPa降至60.54和56.12 MPa，属于该样品和所用本构识别方法的结果。",
+      "纳米压痕结合有限元反演，不能称为直接拉伸测得的屈服强度。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q03",
+    "question_zh": "氧等离子体活化时，持续提高低频功率是否会持续增强键合？转折点附近的测量和作者解释是什么？",
+    "query_en": "Does increasing low-frequency oxygen plasma activation power always increase wafer bond strength, and what competing surface effects explain any turnover?",
+    "expected_doc_ids": [
+      "journals_mi13040537"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "journals_mi13040537",
+        "pdf_page": 7
+      },
+      {
+        "doc_id": "journals_mi13040537",
+        "pdf_page": 8
+      }
+    ],
+    "required_conditions": [
+      "使用氧气、低频功率25–150 W这一实验范围。",
+      "25/75/100/150 W对应1.69/1.82/1.84/1.80 J/m²；100到150 W略下降。",
+      "区分测量结果与作者关于悬挂键增加、离子轰击粗糙化和实际接触面积的解释。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q04",
+    "question_zh": "含SiCN介质的混合键合在退火升温和冷却时，最需关注的剥离应力位置是否相同？高应力是否就等于已经在实验中观察到开裂？",
+    "query_en": "In numerical analyses of SiCN hybrid bonding, how does the interface most vulnerable to peeling stress change between annealing heating and cooling, and is predicted stress equivalent to experimentally observed cracking?",
+    "expected_doc_ids": [
+      "journals_mi15111332"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "journals_mi15111332",
+        "pdf_page": 16
+      }
+    ],
+    "required_conditions": [
+      "这是针对两类结构、错位和CMP凹陷的数值模拟，不能改写为实测裂纹。",
+      "升温主要关注SiCN–SiCN，另讨论SiCN–SiO2；冷却最高应力位置为SiCN–Cu。",
+      "冷却应力仍低于所采用界面粘附强度；高应力点和预测裂纹概率须分开。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q05",
+    "question_zh": "Cu表面加MoS2以减轻氧等离子体污染后，跨界面导电通道怎样形成？论文用哪些电学和元素分布观察支持这种机制？",
+    "query_en": "How is electrical connectivity established after MoS2 protects Cu during oxygen plasma activation, and what electrical pulse and elemental mapping observations support the proposed conductive pathway?",
+    "expected_doc_ids": [
+      "journals_nano15201600"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "journals_nano15201600",
+        "pdf_page": 7
+      },
+      {
+        "doc_id": "journals_nano15201600",
+        "pdf_page": 8
+      },
+      {
+        "doc_id": "journals_nano15201600",
+        "pdf_page": 9
+      }
+    ],
+    "required_conditions": [
+      "导电来自施加偏压的Set过程与Cu导电细丝，不能默认MoS2层天然呈普通Cu–Cu金属接触。",
+      "EDS观察Cu分布；0.8 V脉冲五次或以上时出现不可逆细丝，脉宽10 µs见图注。",
+      "25个结点和最长10天保持观察不等于长期服役寿命或量产验证。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q06",
+    "question_zh": "若提高后退火温度仍无法消除Cu/SiO2的介质间空隙，什么形貌证据可帮助区分CMP塌边与Cu热膨胀失配？选择性Ti钝化的对照结果是什么？",
+    "query_en": "What morphology evidence distinguishes CMP-induced dielectric roll-off voids from thermal expansion mismatch in Cu/SiO2 hybrid bonding, and how do selectively Ti-passivated and unpassivated surfaces compare?",
+    "expected_doc_ids": [
+      "journals_s44172-026-00649-w"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "journals_s44172-026-00649-w",
+        "pdf_page": 4
+      },
+      {
+        "doc_id": "journals_s44172-026-00649-w",
+        "pdf_page": 5
+      }
+    ],
+    "required_conditions": [
+      "限定论文的Void 5介质–介质区域及钝化/未钝化对照。",
+      "未钝化样品在250°C与350°C后仍见该类空隙；AFM塌边约5–6 nm，钝化约0.5 nm。",
+      "这是作者结合形貌与退火对照作出的机理解释，不能扩展成所有混合键合空洞均与热应力无关。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q07",
+    "question_zh": "选择性化学镀Au、Pt或Sn中间层的细间距Cu/SiO2方案，实验方法中预键合与后退火分别采用什么温度、压力和时长？上下压板设置是否相同？",
+    "query_en": "For selective electroless Au, Pt or Sn interlayers on fine-pitch Cu/SiO2, what are the experimental prebond and post-anneal temperatures, pressure and durations, including the upper and lower plate settings?",
+    "expected_doc_ids": [
+      "journals_smsc.202500271"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "journals_smsc.202500271",
+        "pdf_page": 10
+      }
+    ],
+    "required_conditions": [
+      "限于有金属中间层且GPTMS处理的试样，不混入400°C未处理对照。",
+      "方法段：下压板120°C、上压板室温，2.0 MPa保持2 h；后退火250°C、2 h、N2、5°C/min。",
+      "上述是不同阶段和工具设定，不能把120°C与250°C合并为一个键合温度。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q08",
+    "question_zh": "原位加热SPM观察Cu/SiO2时，初始凹陷焊盘在高温和冷却后处于什么高度？论文给出的Cu pumping值是否就是相对氧化层的绝对高度？",
+    "query_en": "During in-situ heating SPM of initially recessed Cu/SiO2 pads, what heights are observed at peak temperature and after cooling, and how is Cu pumping displacement distinguished from absolute height relative to oxide?",
+    "expected_doc_ids": [
+      "imec_06"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "imec_06",
+        "pdf_page": 2
+      },
+      {
+        "doc_id": "imec_06",
+        "pdf_page": 3
+      }
+    ],
+    "required_conditions": [
+      "初始凹陷约−9 nm，400°C时约40 nm，冷却后约9 nm，相对SiO2表面。",
+      "论文按8个焊盘测量估计的最大pumping约51±3 nm是位移口径，与上述绝对高度有别。",
+      "测量为N2中原位SPM加热到400°C，不能写成完成键合后实测界面间隙。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q09",
+    "question_zh": "室温表面活化键合中，TSV与对接Cu电极的突出量不同会对应怎样的电阻差异？这个连接电阻能否只归于Cu–Cu界面？",
+    "query_en": "In room-temperature surface-activated hybrid bonding of via-middle TSV wafers, how do paired TSV and Cu-electrode protrusion values relate to measured connection resistance, and what components are included in that resistance?",
+    "expected_doc_ids": [
+      "imec_07"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "imec_07",
+        "pdf_page": 2
+      },
+      {
+        "doc_id": "imec_07",
+        "pdf_page": 4
+      },
+      {
+        "doc_id": "imec_07",
+        "pdf_page": 5
+      }
+    ],
+    "required_conditions": [
+      "样品1的TSV/电极突起4.0/4.8 nm，样品2为7.7/29 nm。",
+      "连接电阻约3.5 Ω对低于100 mΩ；后者未后退火。",
+      "四端法结果仍包含TSV、电极和键合界面贡献，不能直接视为纯界面电阻。",
+      "接触条件25°C、100 kN、真空低于10^-5 Pa；力不能擅自换算为压力。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q10",
+    "question_zh": "为了缩小Cu、Ta与SiCN在CMP中的去除速率差异，稀释碱性浆料并加过氧化氢的台片试验用了什么配方？结果与原始浆料相比如何？",
+    "query_en": "What diluted alkaline slurry and peroxide condition was tested to narrow CMP removal-rate differences among Cu, Ta and SiCN, and how do the measured rates compare with the original slurry?",
+    "expected_doc_ids": [
+      "imec_09"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "imec_09",
+        "pdf_page": 3
+      },
+      {
+        "doc_id": "imec_09",
+        "pdf_page": 4
+      }
+    ],
+    "required_conditions": [
+      "这是2×2 cm coupon实验，不能直接视为整片300 mm或完整器件电良率验证。",
+      "浆料:水为1:2并加0.4 wt% H2O2，Cu/Ta/SiCN去除速率20/17/30.5 nm/min。",
+      "原始无H2O2浆料对应28.2/28.8/84.2 nm/min；三种材料顺序不可混淆。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q11",
+    "question_zh": "同一聚酰亚胺研究的纯PI–PI剪切强度试验与Cu/PI混合键合样片，后退火条件是否相同？怎样避免把两组过程参数混用？",
+    "query_en": "Within a polyimide hybrid-bonding study, do the pure PI-to-PI die-shear specimens and the Cu/PI hybrid specimens use the same post-bond annealing conditions?",
+    "expected_doc_ids": [
+      "imec_11"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "imec_11",
+        "pdf_page": 2
+      },
+      {
+        "doc_id": "imec_11",
+        "pdf_page": 3
+      },
+      {
+        "doc_id": "imec_11",
+        "pdf_page": 5
+      }
+    ],
+    "required_conditions": [
+      "纯PI–PI一般测试后退火250°C、60 min、N2；Cu/PI-A混合样片后退火250°C、3 h。",
+      "纯PI-A的150°C/0.35 MPa并非混合样片接触工具参数。",
+      "混合样片接触为载台室温、机械臂200°C、25 N约0.35 MPa持续3 s；工具温度不等于已测界面温度。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "q12",
+    "question_zh": "用四点弯曲比较晶圆中心与边缘接合能时，干燥环境和普通空气会给出什么差别？这种差别能否直接解释成键合工艺被改进？",
+    "query_en": "How does four-point bending bond-energy measurement differ between anhydrous and ambient conditions across the center and edge of a thermally oxidized silicon wafer, and can that measurement difference establish a bonding-process improvement?",
+    "expected_doc_ids": [
+      "imec_05"
+    ],
+    "expected_pdf_pages": [
+      {
+        "doc_id": "imec_05",
+        "pdf_page": 3
+      },
+      {
+        "doc_id": "imec_05",
+        "pdf_page": 4
+      }
+    ],
+    "required_conditions": [
+      "实际试样为热SiO2直接接合界面，不能称为Cu混合互连的界面强度。",
+      "中心/中间/侧面平均值：无水2.88/2.88/2.74，对应空气1.82/1.74/1.70 J/m²。",
+      "变化来自测量环境对开裂/剥离行为的影响；同一晶圆的测量差别不等于工艺优化因果证据。"
+    ],
+    "answerable": true
+  },
+  {
+    "id": "u01",
+    "question_zh": "现有证据能否给出适用于所有Cu/SiCN混合键合材料与设备的唯一最优清洗、活化和退火配方，并保证最高电良率？",
+    "query_en": "What universal cleaning, activation and annealing recipe maximizes electrical yield for every Cu/SiCN hybrid-bonding material and tool?",
+    "expected_doc_ids": [],
+    "expected_pdf_pages": [],
+    "required_conditions": [
+      "不得把不同样品、设备、几何和良率定义合并为一个普适工艺窗口。"
+    ],
+    "answerable": false,
+    "evidence_gap_reason": "资料是不同材料、尺寸、设备及检测指标的异质研究，没有覆盖全部参数的共同对照实验，也没有跨设备量产验证。"
+  },
+  {
+    "id": "u02",
+    "question_zh": "Cu/PI混合键合在85°C、85%RH下连续工作十年的失效概率和95%置信区间是多少？",
+    "query_en": "What are the ten-year failure probability and 95% confidence interval for Cu/polyimide hybrid bonds operated continuously at 85°C and 85% relative humidity?",
+    "expected_doc_ids": [],
+    "expected_pdf_pages": [],
+    "required_conditions": [
+      "不能将PI绝缘B-HAST短期结果或Cu/SiCN电击穿模型直接迁移为Cu/PI十年服役寿命。"
+    ],
+    "answerable": false,
+    "evidence_gap_reason": "现有PI材料B-HAST条件、时长和电绝缘观测不足以建立指定85/85场景的寿命分布、加速模型及置信区间；没有该条件下十年统计数据。"
+  },
+  {
+    "id": "u03",
+    "question_zh": "把实验室Cu/SiO2混合键合放大到每月一万片300 mm晶圆后，每个合格堆叠芯片的人民币制造成本是多少？",
+    "query_en": "What is the manufacturing cost in RMB per good Cu/SiO2 hybrid-bonded stack at a production volume of ten thousand 300-mm wafers per month?",
+    "expected_doc_ids": [],
+    "expected_pdf_pages": [],
+    "required_conditions": [
+      "须有设备折旧、材料与耗材、产能利用率、人工、返工及量产良率等共同成本边界。"
+    ],
+    "answerable": false,
+    "evidence_gap_reason": "论文没有所给产能下的完整设备报价、厂务成本、利用率、量产良率和财务核算口径，不能由实验室温度或单项良率推算成本。"
+  },
+  {
+    "id": "u04",
+    "question_zh": "在相同焊盘几何、键合热预算和1000次温度循环条件下，MoS2与Ti钝化哪一种能取得更低的混合键合电失效率？",
+    "query_en": "Under identical pad geometry, bonding thermal budget and one thousand thermal cycles, does MoS2 or Ti passivation produce a lower electrical failure rate in hybrid bonds?",
+    "expected_doc_ids": [],
+    "expected_pdf_pages": [],
+    "required_conditions": [
+      "必须有相同器件/工艺与温循试验条件的直接比较，不能用10天细丝保持与另一种样品的截面或初始良率作对照。"
+    ],
+    "answerable": false,
+    "evidence_gap_reason": "两种钝化研究的导电机制、样品结构、工艺和验证指标不同，资料没有所述共同条件下1000次温循的头对头电失效率数据。"
+  }
+]
