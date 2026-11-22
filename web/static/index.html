@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>混合键合知识图谱</title>
+  <title>混合键合资料知识库</title>
   <script>
     // Apply the saved theme before first paint to avoid a light/dark flash.
     try { const t = localStorage.getItem("kg-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (_) {}
   </script>
-  <link rel="stylesheet" href="/static/styles.css?v=20261106md1">
+  <link rel="stylesheet" href="/static/styles.css?v=20261122ui1">
 </head>
 <body>
   <div class="shell">
@@ -19,17 +19,17 @@
         </span>
         <span>
           <strong>混合键合</strong>
-          <small>文献 · 问答 · 知识图谱</small>
+          <small>资料知识库</small>
         </span>
       </a>
       <div class="workspace-picker"><span>知识库架构</span>
         <div class="workspace-options" role="group" aria-label="切换知识库架构">
-          <button type="button" data-arch="demo">自制 Demo</button>
           <button type="button" data-arch="raganything">RAG-Anything</button>
+          <button type="button" data-arch="demo">旧版 Demo</button>
         </div>
         <select id="workspace-arch" aria-label="知识库架构">
-          <option value="demo">简易自制架构 Demo</option>
           <option value="raganything">RAG-Anything</option>
+          <option value="demo">旧版 Demo</option>
         </select>
       </div>
       <nav class="nav" id="nav">
@@ -65,9 +65,9 @@
 
   <div class="toasts" id="toasts" aria-live="polite"></div>
 
-  <script src="/static/ingestion.js?v=20261105api1"></script>
-  <script src="/static/report.js"></script>
-  <script src="/static/innovation.js?v=20261107b"></script>
-  <script src="/static/app.js?v=kg2-d9b5e873f4"></script>
+  <script src="/static/ingestion.js?v=20261122ui1"></script>
+  <script src="/static/report.js?v=20261122ui1"></script>
+  <script src="/static/innovation.js?v=20261122ui1"></script>
+  <script src="/static/app.js?v=20261122ui1"></script>
 </body>
 </html>

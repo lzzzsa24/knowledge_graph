@@ -23,7 +23,7 @@
     const canExecute = () => status && !status.maintenance && status.provider?.configured;
 
     root.className = "page ingestion-page";
-    root.innerHTML = `<div class="page-head"><div><h1>批量入库</h1><p>简易自制架构 Demo · 上传 PDF，生成证据、分类与知识记录。</p></div><button class="btn" type="button" data-ingestion-refresh>刷新状态</button></div>
+    root.innerHTML = `<div class="page-head"><div><h1>文献入库</h1><p>旧版 Demo · 上传 PDF，生成原文证据、分类与知识记录。</p></div><button class="btn" type="button" data-ingestion-refresh>刷新状态</button></div>
       <div data-ingestion-maintenance hidden></div>
       <div class="ingestion-layout">
         <section class="card ingestion-setup" aria-labelledby="ingestion-new-title">

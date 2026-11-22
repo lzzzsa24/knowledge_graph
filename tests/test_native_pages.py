@@ -1,12 +1,30 @@
 """Revision identity, per-page selection, native visual evidence and retry behavior."""
 import asyncio
 import hashlib
+from types import SimpleNamespace
 
 import pymupdf
 import pytest
 
 from kg_pilot import native_pages as mix
 from kg_pilot.native_library import file_hash, save
+
+
+def test_windows_layout_retries_a_crashed_worker_with_pdfium(tmp_path, monkeypatch):
+    pdf = tmp_path / "sample.pdf"
+    layout = object()
+    calls = []
+
+    def convert(path, *, pdfium=False):
+        calls.append((path, pdfium))
+        if not pdfium:
+            raise mix.BrokenProcessPool("native PDF parser exited")
+        return layout
+
+    monkeypatch.setattr(mix, "os", SimpleNamespace(name="nt"))
+    monkeypatch.setattr(mix, "_isolated_source_layout", convert)
+    assert mix.source_layout(pdf, tmp_path, {"id": "sample", "sha256": "bound"}) is layout
+    assert calls == [(pdf, False), (pdf, True)]
 
 
 def test_index_rejects_shifted_visual_and_missing_text_page():

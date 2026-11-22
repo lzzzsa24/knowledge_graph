@@ -2,9 +2,14 @@
 import asyncio
 import base64
 from collections import Counter, defaultdict
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
 from contextlib import nullcontext
 import hashlib
 import json
+import logging
+from multiprocessing import get_context
+import os
 from pathlib import Path
 import tempfile
 import time
@@ -12,7 +17,7 @@ import time
 import pymupdf
 
 from kg_pilot.native_library import file_hash, read_json, save
-from kg_pilot.decoration_filter import decoration_reason, visual_templates
+from kg_pilot.decoration_filter import AUTHOR_TABLE_REASON, decoration_reason, visual_templates
 from kg_pilot.clipped_forms import visible_layout_copy
 
 
@@ -77,24 +82,48 @@ def page_plan(base, row):
     return plan
 
 
+def _convert_source_layout(pdf_path, pdfium=False):
+    from docling.datamodel.base_models import InputFormat
+    from docling.datamodel.pipeline_options import PdfPipelineOptions, TableFormerMode
+    from docling.document_converter import DocumentConverter, PdfFormatOption
+
+    options = PdfPipelineOptions(do_ocr=False, do_table_structure=True)
+    options.table_structure_options.mode = TableFormerMode.ACCURATE
+    if pdfium:
+        from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
+
+        pdf = PdfFormatOption(pipeline_options=options, backend=PyPdfiumDocumentBackend)
+    else:
+        pdf = PdfFormatOption(pipeline_options=options)
+    converter = DocumentConverter(format_options={InputFormat.PDF: pdf})
+    result = converter.convert(pdf_path)
+    if result.status.value != "success":
+        raise ValueError(f"Original-PDF layout incomplete: {result.status}")
+    return result.document
+
+
+def _isolated_source_layout(pdf_path, *, pdfium=False):
+    with ProcessPoolExecutor(max_workers=1, mp_context=get_context("spawn")) as worker:
+        return worker.submit(_convert_source_layout, pdf_path, pdfium).result()
+
+
 def source_layout(pdf_path, job, row, *, reuse=True):
-    """Reuse an original-PDF layout if available. New layouts run with whole-page OCR off."""
+    """Reuse a verified layout or convert the original PDF with page OCR off."""
     from docling_core.types.doc import DoclingDocument
+
     previous = job / "parse.json"
     if reuse and previous.is_file() and read_json(previous).get("sha256") == row["sha256"]:
         candidates = list((job / "parser").glob(f"*/{pdf_path.stem}/docling/{pdf_path.stem}.json"))
         if len(candidates) == 1:
             return DoclingDocument.load_from_json(candidates[0])
-    from docling.datamodel.base_models import InputFormat
-    from docling.datamodel.pipeline_options import PdfPipelineOptions, TableFormerMode
-    from docling.document_converter import DocumentConverter, PdfFormatOption
-    options = PdfPipelineOptions(do_ocr=False, do_table_structure=True)
-    options.table_structure_options.mode = TableFormerMode.ACCURATE
-    converter = DocumentConverter(format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=options)})
-    result = converter.convert(pdf_path)
-    if result.status.value != "success":
-        raise ValueError(f"Original-PDF layout incomplete: {result.status}")
-    return result.document
+    if os.name != "nt":
+        return _convert_source_layout(pdf_path)
+    # Keep native PDF parser faults from terminating the whole preflight batch.
+    try:
+        return _isolated_source_layout(pdf_path)
+    except BrokenProcessPool:
+        logging.getLogger(__name__).warning("PDF layout worker exited for %s, retrying with PDFium", row["id"])
+        return _isolated_source_layout(pdf_path, pdfium=True)
 
 
 def _layout_regions(pdf_path, layout, row, selected):
@@ -231,7 +260,11 @@ async def mixed_pages(pilot, row, pdf_path, job, hooks, *, review_crops=False, l
     if cached_only:
         options["cached_only"] = True
     regions, reviewed, templates = await crop_regions(pilot, row, pdf_path, job, hooks, review_crops=review_crops, **options)
-    region_hash = hashlib.sha256(json.dumps(regions, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    # The author-table flag is recorded in the decoration identity below.
+    # Keep the original crop inventory hash so its existing transcriptions can be reused.
+    crop_inventory = [{k: v for k, v in item.items() if k != "filter_reason"}
+                      if item.get("filter_reason") == AUTHOR_TABLE_REASON else item for item in regions]
+    region_hash = hashlib.sha256(json.dumps(crop_inventory, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
     skipped = []
     by_page = defaultdict(list)
@@ -316,6 +349,8 @@ async def mixed_pages(pilot, row, pdf_path, job, hooks, *, review_crops=False, l
                     key = "table_body"
                     prompt = ("Transcribe this table into Markdown. Preserve all row and "
                               "column labels, values, signs and units. Do not guess unreadable cells.")
+                    if item.get("preview_source") == "llm_repair_pdf":
+                        prompt += " After the table, transcribe every visible table note or footnote with its marker."
                 else:
                     continue
                 task = asyncio.create_task(transcribe(prompt, image_path=item["img_path"]))

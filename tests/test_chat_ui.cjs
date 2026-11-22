@@ -181,7 +181,7 @@ browser.on("error", (error) => { spawnError = error; });
         nativeApi.value = "API 原生"; nativeApi.dispatchEvent(new Event("input")); document.querySelector(".chat-composer").requestSubmit();
         await settle(() => document.querySelector(".chat-citation"));
         document.querySelector('[data-via="subscription"]').click();
-        await settle(() => document.querySelector(".chat-status-copy strong")?.textContent.includes("Codex 订阅问答"));
+        await settle(() => document.querySelector(".chat-status-copy strong")?.textContent.includes("Codex CLI 订阅问答"));
         check(document.querySelector(".chat-config").hidden, "Subscription QA exposed legacy API configuration.");
         const nativeInput = document.querySelector(".chat-composer textarea");
         nativeInput.value = "原生问题"; nativeInput.dispatchEvent(new Event("input", { bubbles: true }));

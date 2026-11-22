@@ -26,6 +26,8 @@ __pycache__/
 /outputs/
 /reports/
 /*.pptx
+/docs/reference/*.pptx
+/docs/汇报/
 
 # pilot 中的文献、索引和运行数据独立保存，只跟踪项目规则和文档。
 /pilot/*

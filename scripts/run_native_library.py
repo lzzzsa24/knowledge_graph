@@ -323,7 +323,7 @@ async def ingest_rolling(root, rows, call, wait_for_reset):
 
 async def ingest_workspace_batches(root, rows, call, *, wait_for_reset=False, selection=None, concurrency=None,
                                    prefetch_call=None):
-    from kg_pilot.native_crop_review import needs_followup
+    from kg_pilot.native_crop_review import needs_followup, needs_repair
     from kg_pilot.native_pages import STALE_INPUTS
     from kg_pilot.native_readiness import preflight_receipt
 
@@ -384,7 +384,7 @@ async def ingest_workspace_batches(root, rows, call, *, wait_for_reset=False, se
             doc = row["id"]
             priority, _, review = _pairing_profile(root, row)
             receipt = preflight_receipt(root/"documents"/doc, row["sha256"])
-            if needs_followup(review, row["sha256"]):
+            if needs_followup(review, row["sha256"]) or needs_repair(review, row["sha256"]):
                 retry.append(row)
             elif priority == 2 or receipt.get("status") == "needs_review":
                 held.append({"doc_id":doc, "message":receipt.get("error", "裁图待复核"), "at":now()})

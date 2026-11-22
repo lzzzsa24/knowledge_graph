@@ -221,7 +221,9 @@ def test_preflight_receipt_binds_reviewed_assets_and_full_page_inputs(tmp_path):
     assert native_readiness.preflight_receipt(tmp_path, row["sha256"]) == {}
 
 
-def test_formal_batch_overlaps_automatic_review_for_next_batch(tmp_path, monkeypatch):
+@pytest.mark.parametrize("already_reviewed", [False, True])
+def test_formal_batch_overlaps_automatic_review_for_next_batch(tmp_path, monkeypatch, already_reviewed):
+    from kg_pilot.crop_audit import FOLLOWUP_POLICY
     from scripts import run_native_library as runner
 
     root = lib.directory(tmp_path)
@@ -234,7 +236,10 @@ def test_formal_batch_overlaps_automatic_review_for_next_batch(tmp_path, monkeyp
     lib.save(current / "mixed-parse.json", {})
     lib.save(current / "crop-review.json", {"revision":"current", "status":"accepted"})
     ready_fixture(current, "current")
-    lib.save(held / "crop-review.json", {"revision":"held", "status":"needs_review", "held":[{"page":1}]})
+    audit = {"revision":"held", "status":"needs_review", "held":[{"page":1,"kind":"cut"}]}
+    if already_reviewed:
+        audit["followup_policy"] = FOLLOWUP_POLICY
+    lib.save(held / "crop-review.json", audit)
     monkeypatch.setattr(runner, "current_windows", lambda _: {})
 
     async def run():

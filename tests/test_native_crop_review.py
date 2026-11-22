@@ -106,6 +106,32 @@ def test_full_scan_around_table_holds_both_candidates(tmp_path,monkeypatch):
     assert rows[0]["footnote_source_sha256"]=="outer" and rows[1]["filter_reason"]
 
 
+@pytest.mark.parametrize("extra", [None, "caption", "data", "artwork"])
+def test_first_page_table_filters_only_verified_author_metadata(tmp_path, extra):
+    path = tmp_path / "article.pdf"
+    names = ("Dana Smith Device Lab dana.smith@example.org", "Kim Lee Device Lab kim.lee@example.org")
+    with fitz.open() as pdf:
+        page = pdf.new_page()
+        page.insert_text((30, 80), names[0])
+        page.insert_text((290, 80), names[1])
+        page.insert_text((30, 210), "Abstract - Findings of the experiment.")
+        if extra == "caption":
+            page.insert_text((30, 62), "Table 1. Contributor details.")
+        if extra == "data":
+            page.insert_text((30, 100), "Contact resistance was 0.5 ohm.")
+        if extra == "artwork":
+            page.draw_line((32, 90), (190, 110))
+        pdf.save(path)
+
+    caption = ["Table 1. Contributor details."] if extra == "caption" else []
+    table = dict(type="table", page_idx=0, source_bbox=[25, 67, 565, 112], image_sha256="table",
+                 table_caption=caption, table_body=f"| {names[0]} | {names[1]} |")
+    pages, _, risks, *_ = review._prepare(path, tmp_path, {"sha256": "a" * 64}, [table], tmp_path, {}, [])
+    assert pages[1][0].get("filter_reason") == (review.AUTHOR_TABLE_REASON if extra is None else None)
+    if extra in ("data", "artwork"):
+        assert 1 in risks
+
+
 def test_table_note_uses_revision_matched_text_near_this_table():
     from kg_pilot.native_crop_review import _bind_table_notes
     with fitz.open() as doc:
@@ -221,6 +247,72 @@ def test_pending_crop_is_rechecked_automatically_with_prior_findings(tmp_path,mo
     assert asyncio.run(review.prepare_reviewed_regions(*args))==[]
     followup=json.loads(report.read_text("utf8"))
     assert followup["status"]=="accepted" and followup["followup_policy"]==review.FOLLOWUP_POLICY
+
+
+@pytest.mark.parametrize("decision", ["confirmed", "unconfirmed", "invalid_box", "followup_repair", "invalid_review"])
+def test_llm_crop_repair_reuses_review_checkpoint_and_requires_independent_acceptance(tmp_path, monkeypatch, decision):
+    source = tmp_path / "source.pdf"
+    with fitz.open() as pdf:
+        page = pdf.new_page(width=400, height=600)
+        page.insert_text((35, 55), "The display equation is printed separately below.")
+        page.insert_text((80, 180), "C = a / b     (1)")
+        if decision == "followup_repair":
+            page.insert_text((80, 310), "R = a + b     (2)")
+        pdf.save(source)
+
+    issue = {"kind":"missing", "regions":[], "labels":["Equation 1"], "detail":"Uncropped display equation"}
+    async def initial_review(pdf, n, items, hooks):
+        return {"page":n, "regions":[], "issues":[issue]}
+
+    monkeypatch.setattr(review, "review_page", initial_review)
+    row = {"sha256":"a" * 64}
+    report_path = tmp_path / "crop-review.json"
+    calls = []
+
+    class Hooks:
+        async def invoke(self, messages):
+            text, original, overlay = messages[0]["content"]
+            assert original["type"] == overlay["type"] == "image_url"
+            calls.append(text["text"])
+            if len(calls) == 1:
+                bbox = [185, 275, 470, 315] if decision != "invalid_box" else [185, 275, 1100, 315]
+                return json.dumps({"fixes":[{"finding":1,"outputs":[{"kind":"equation","bbox":bbox}]}]})
+            if decision == "followup_repair" and len(calls) == 2:
+                return json.dumps({"confirmed":False, "issues":[{**issue, "labels":["Equation 2"]}]})
+            if decision == "followup_repair" and len(calls) == 3:
+                assert "Equation 2" in text["text"]
+                return json.dumps({"fixes":[{"finding":1,"outputs":[{"kind":"equation","bbox":[185, 485, 470, 535]}]}]})
+            assert "Independent verification" in text["text"]
+            if decision == "invalid_review":
+                return "invalid JSON"
+            return json.dumps({"confirmed":decision in {"confirmed", "followup_repair"}, "issues":[]})
+
+    inputs = (tmp_path, row, source, tmp_path, [], Hooks(), {}, [])
+    with pytest.raises(ValueError, match="裁图待复核"):
+        asyncio.run(review.prepare_reviewed_regions(*inputs))
+    old = json.loads(report_path.read_text("utf8"))
+    save(report_path, {**old, "followup_policy":review.FOLLOWUP_POLICY})
+
+    def unexpected_review(*_):
+        pytest.fail("Only the flagged-page repair may run against the stored checkpoint")
+
+    monkeypatch.setattr(review, "_prepare", unexpected_review)
+    if decision in {"confirmed", "followup_repair"}:
+        items = asyncio.run(review.prepare_reviewed_regions(*inputs))
+        assert len(items) == (2 if decision == "followup_repair" else 1)
+        item = items[0]
+        assert item["type"] == "equation" and item["page_idx"] == 0
+        assert item["source_bbox"] == [74, 165, 188, 189]
+        assert hashlib.sha256(Path(item["img_path"]).read_bytes()).hexdigest() == item["image_sha256"]
+        assert asyncio.run(review.prepare_reviewed_regions(*inputs, cached_only=True)) == items
+    else:
+        for _ in range(2):
+            with pytest.raises(ValueError, match="裁图待复核"):
+                asyncio.run(review.prepare_reviewed_regions(*inputs))
+        result = json.loads(report_path.read_text("utf8"))
+        assert result["held"] == old["held"] and result["items"] == []
+        assert not review.needs_repair(result, row["sha256"])
+    assert len(calls) == {"invalid_box":1,"confirmed":2,"unconfirmed":2,"followup_repair":4,"invalid_review":3}[decision]
 
 
 def test_new_logos_require_context_and_scientific_evidence_survives(tmp_path,monkeypatch):

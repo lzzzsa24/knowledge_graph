@@ -110,7 +110,7 @@
     const session = sessions.get(key);
     const s = session.state;
     host.innerHTML = `<div class="page ideas-page">
-      <div class="page-head"><div><h1>创新点生成</h1><p>${arch === "raganything" ? "从 RAG-Anything 已发布文献的 PDF 页" : "从 Demo 文献原文与知识记录"}寻找可检验的研究问题。</p></div><a class="btn" href="${configHref}">${icon("ask")}回到论文问答</a></div>
+      <div class="page-head"><div><h1>创新点生成</h1><p>${arch === "raganything" ? "RAG-Anything · 从已发布文献的 PDF 原页" : "旧版 Demo · 从文献原文与知识记录"}寻找可检验的研究问题。</p></div><a class="btn" href="${configHref}">${icon("ask")}回到论文问答</a></div>
       <section class="card chat-status ideas-status" aria-live="polite"><div class="chat-status-copy" data-ideas-status></div><div class="links"><a class="btn" href="${configHref}" data-ideas-config>配置通用 API</a><button class="btn" type="button" data-ideas-refresh>检查连接</button></div></section>
       <form class="card ideas-composer" data-ideas-form>
         <div class="ideas-composer-head"><label for="ideas-prompt">从哪里开始？</label><button class="btn ghost sm" type="button" data-ideas-import>${icon("plus")}导入当前问答</button></div>

@@ -23,6 +23,7 @@ from kg_pilot.pipeline import PILOT, jsonl, read_json
 from kg_pilot.bilingual_retrieval import title_documents as _title_documents
 from kg_pilot.effective_evidence import FIELD, load_effective_evidence
 from kg_pilot.retrieval import retrieval_model, retrieve
+from kg_pilot.subscription import status as subscription_status
 from kg_pilot import llm_provider as llm
 
 BASE_URL = llm.PARATERA_BASE_URL
@@ -179,14 +180,6 @@ def _request(method: str, endpoint: str, key: str, payload=None, *, transport=No
         failure = QAError(str(error))
         failure.http_status = error.status
         raise failure from None
-
-
-def subscription_status():
-    import shutil
-    from kg_pilot.codex_subscription import SOL_MODEL
-    available = shutil.which("codex") is not None
-    return {"configured": available, "provider": "Codex CLI", "provider_id": "subscription",
-            "model": SOL_MODEL + " · High", "message": "使用本机 Codex 订阅。" if available else "未找到 Codex CLI。"}
 
 
 def generation_settings(channel):

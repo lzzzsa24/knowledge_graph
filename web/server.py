@@ -24,7 +24,7 @@ from pathlib import Path
 
 import pymupdf
 from fastapi import FastAPI, HTTPException, Query, Request
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Literal
 from urllib.parse import urlsplit
 from fastapi.responses import FileResponse, Response, JSONResponse
@@ -73,7 +73,8 @@ async def protect_dataset_during_publish(request: Request, call_next):
     # process and CLI workers. Intake control stays available for recovery.
     # Liveness and in-memory progress must remain readable during a long model
     # call. These endpoints do not query SQLite or open a vector-store client.
-    if request.url.path in {"/api/debug/health", "/api/debug/ideas/runs", "/api/chat/status", "/api/chat/configure"} or request.url.path.startswith("/api/native/"):
+    if request.url.path in {"/api/debug/health", "/api/debug/ideas/runs", "/api/chat/status", "/api/chat/configure",
+                            "/api/chat/subscription/configure"} or request.url.path.startswith("/api/native/"):
         return await call_next(request)
     if request.url.path.startswith("/api/ingestion"):
         try:
@@ -652,6 +653,31 @@ def local_request(request: Request):
 def chat_status(request: Request, channel: Literal["api", "subscription"] = "api"):
     local_request(request)
     return subscription_status() if channel == "subscription" else provider_status()
+
+
+class SubscriptionConfigureRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    provider_id: str = Field(min_length=1, max_length=32)
+    model: str | None = Field(default=None, min_length=1, max_length=200)
+    effort: str | None = Field(default=None, min_length=1, max_length=32)
+
+
+@app.post("/api/chat/subscription/configure")
+@app.post("/api/native/subscription/configure")
+def subscription_configure(body: SubscriptionConfigureRequest, request: Request):
+    local_request(request)
+    status = subscription_status()
+    option = next((row for row in status["providers"] if row["provider_id"] == body.provider_id), None)
+    if option is None:
+        raise HTTPException(422, "未知的 CLI 订阅提供方。")
+    if not option["implemented"]:
+        raise HTTPException(409, f'{option["provider"]} 尚未接入。')
+    if any(value is not None and value != option[key] for key, value in (("model", body.model), ("effort", body.effort))):
+        raise HTTPException(422, "当前提供方使用固定的模型和推理强度。")
+    if not option["available"]:
+        raise HTTPException(503, status["message"])
+    return status
 
 
 @app.get("/api/native/status")

@@ -14,9 +14,13 @@ from PIL import Image, ImageChops, ImageDraw, ImageStat
 from kg_pilot.crop_audit import AUDIT_POLICY, FOLLOWUP_POLICY, review_page
 from kg_pilot.crop_geometry import bind_local_captions, candidate_boxes, item_label, label_key, overlaps, printed_labels, repair_page
 from kg_pilot.crop_edges import check_page_edges
+from kg_pilot.crop_repair import ACTIONS, POLICY as REPAIR_POLICY, repair_audit
 from kg_pilot.crop_sources import ArchiveUnavailable, apply_equations, archive_figure, read_archive, same_caption
-from kg_pilot.decoration_filter import decoration_reason
+from kg_pilot.decoration_filter import AUTHOR_TABLE_REASON, decoration_reason
 from kg_pilot.native_library import file_hash, read_json, save
+
+AUTHOR_TABLE_POLICY = "first-page-author-table-v1"
+CONTACT_EMAIL = re.compile(r"([\w.+-]+)\s*@\s*([\w-]+(?:\.[\w-]+)+)$")
 
 NONTECHNICAL_MARK = re.compile(
     r"\b(?:logo|masthead|wordmark|navigation icon|publication metadata|license badge|"
@@ -25,9 +29,61 @@ NONTECHNICAL_MARK = re.compile(
     r"(?:envelope|email) icon|check for updates)\b", re.I)
 
 
+def _untitled_first_page_table(item):
+    return (item["page_idx"] == 0 and item["type"] == "table"
+            and item.get("source_bbox") and not item.get("table_caption")
+            and not item.get("table_footnote"))
+
+
+def _author_table(page, item):
+    area = fitz.Rect(item["source_bbox"])
+    abstracts = page.search_for("Abstract")
+    if not abstracts or area.is_empty or area.y1 > min(mark.y0 for mark in abstracts):
+        return False
+    cells = [cell.strip() for line in item.get("table_body", "").splitlines()
+             for cell in line.split("|") if cell.strip() and not re.fullmatch(r"[-:\s]+", cell)]
+    if len(cells) < 2:
+        return False
+    affiliations = set()
+    for cell in cells:
+        email = CONTACT_EMAIL.search(cell)
+        words = cell[:email.start()].split() if email else []
+        # Require each cell to start with a name matching its contact address,
+        # and to contain additional affiliation text before the address.
+        if len(words) < 3 or not all(word.isalpha() for word in words[:2]):
+            return False
+        mailbox = re.sub(r"[\W_]", "", email[1].casefold())
+        if not mailbox.startswith(words[0].casefold()) or not mailbox.endswith(words[1].casefold()):
+            return False
+        affiliations.add(" ".join(words[2:]).casefold())
+    if len(affiliations) != 1:
+        return False
+    # Check the actual crop, since a layout model can omit text or artwork
+    # from its table transcription.
+    if any(kind not in {"fill-text", "stroke-text", "ignore-text"} and area.intersects(fitz.Rect(box))
+           for kind, box in page.get_bboxlog()):
+        return False
+    return (Counter(re.findall(r"\w+|[^\w\s]", " ".join(cells).casefold()))
+            == Counter(re.findall(r"\w+|[^\w\s]", page.get_text(clip=area).casefold())))
+
+
 def needs_followup(audit, sha):
     return (audit.get("revision") == sha and audit.get("status") == "needs_review"
             and bool(audit.get("held")) and audit.get("followup_policy") != FOLLOWUP_POLICY)
+
+
+def needs_repair(audit, sha):
+    return (audit.get("revision") == sha and audit.get("status") == "needs_review"
+            and audit.get("followup_policy") == FOLLOWUP_POLICY and audit.get("repair_policy") != REPAIR_POLICY
+            and any(type(i.get("page")) is int and (i.get("kind") or i.get("reason")) in ACTIONS
+                    for i in audit.get("held", [])))
+
+
+def _finish_review(path, audit):
+    save(path, audit)
+    if audit["held"]:
+        raise ValueError(f"裁图待复核：{len(audit['held'])} 项，见 {path}")
+    return audit["items"]
 
 
 @lru_cache(maxsize=1)
@@ -256,6 +312,11 @@ def _prepare(pdf_path, job, row, regions, tools_dir, reviewed, templates, confir
                 reason=decoration_reason(i,reviewed,templates,pdf_sha=row["sha256"])
                 if reason:
                     i["filter_reason"]=reason
+                elif _untitled_first_page_table(i):
+                    if _author_table(pdf[n-1], i):
+                        i["filter_reason"]=AUTHOR_TABLE_REASON
+                    else:
+                        risks.add(n)
                 elif i["type"]=="image" and not i.get("image_caption") and not i.get("image_footnote"):
                     risks.add(n)
                     prediction=classify(i["img_path"],tools_dir)
@@ -291,17 +352,27 @@ async def prepare_reviewed_regions(pilot,row,pdf_path,job,regions,hooks,reviewed
     report_path=job/"crop-review.json"
     sidecar=pdf_path.with_suffix(".pmc.json")
     confirmed_scans=read_json(Path(__file__).with_name("reviewed_table_scans.json")).get(row["sha256"],[])
+    table_policy = [AUTHOR_TABLE_POLICY] if any(_untitled_first_page_table(i) for i in regions) else []
     identity=hashlib.sha256(json.dumps(["crop-edges-and-captions-v8",AUDIT_POLICY,row["sha256"],regions,reviewed,templates,
+                                        *table_policy,
                                         file_hash(sidecar) if sidecar.is_file() else None,*confirmed_scans],
                                       ensure_ascii=False,sort_keys=True).encode()).hexdigest()
     previous = defaultdict(list)
     prior_findings = []
     if report_path.exists():
         old=read_json(report_path)
-        if old.get("identity")==identity and old.get("status")=="accepted" and all(
-                Path(i["img_path"]).is_file() and file_hash(Path(i["img_path"]))==i["image_sha256"] for i in old["items"]):
-            return old["items"]
-        if needs_followup(old, row["sha256"]):
+        repair_due = needs_repair(old, row["sha256"])
+        repair_done = old.get("status")=="needs_review" and old.get("repair_policy")==REPAIR_POLICY
+        if old.get("identity")==identity and (old.get("status")=="accepted" or (not cached_only and (repair_due or repair_done))):
+            assets_match = all(Path(i["img_path"]).is_file() and file_hash(Path(i["img_path"]))==i["image_sha256"]
+                               for i in old["items"])
+            if assets_match:
+                if old.get("status")=="accepted":
+                    return old["items"]
+                if repair_done:
+                    raise ValueError(f"裁图待复核：{len(old['held'])} 项，见 {report_path}")
+                return _finish_review(report_path, await repair_audit(pdf_path, job, old, hooks))
+        if needs_followup(old, row["sha256"]) or repair_due:
             prior_findings = old["held"]
             for issue in prior_findings:
                 if issue.get("page"):
@@ -412,10 +483,13 @@ async def prepare_reviewed_regions(pilot,row,pdf_path,job,regions,hooks,reviewed
                     held.append({"page":n,"round":"after_repair",**issue})
     items=[i for n in sorted(pages) for i in pages[n]]
     followup = {"followup_policy":FOLLOWUP_POLICY, "prior_findings":prior_findings} if prior_findings else {}
-    save(report_path,{"identity":identity,"policy":AUDIT_POLICY,"status":"needs_review" if held else "accepted",
-                      "revision":row["sha256"],"selected_pages":selected,"reviews":answers,
-                      "repair_reviews":repair_reviews,"held":held,
-                      "repairs":notes,"items":items,"inline_formulas":archive["inline"] if archive else [], **followup})
-    if held:
-        raise ValueError(f"裁图待复核：{len(held)} 项，见 {report_path}")
-    return items
+    audit = {"identity":identity,"policy":AUDIT_POLICY,"status":"needs_review" if held else "accepted",
+             "revision":row["sha256"],"selected_pages":selected,"reviews":answers,
+             "repair_reviews":repair_reviews,"held":held,
+             "repairs":notes,"items":items,"inline_formulas":archive["inline"] if archive else [], **followup}
+    # Save the completed audit before invoking the planner so an interrupted
+    # repair can resume from its exact original findings and crop inventory.
+    if needs_repair(audit, row["sha256"]):
+        save(report_path, audit)
+        audit = await repair_audit(pdf_path, job, audit, hooks)
+    return _finish_review(report_path, audit)

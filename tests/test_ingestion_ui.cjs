@@ -83,7 +83,7 @@ async function run(html, source, css, mode) {
   };
   const selectFiles = (names) => { const transfer = new DataTransfer(); names.forEach((value) => transfer.items.add(value instanceof File ? value : new File(["%PDF-1.4\nmock"], value, { type: value.endsWith(".pdf") ? "application/pdf" : "text/plain" }))); const input = $("[data-ingestion-files]"); input.files = transfer.files; input.dispatchEvent(new Event("change", { bubbles: true })); };
   const poll = async () => { const [id, callback] = [...timers][0] || []; check(callback, "No running-batch poll scheduled."); timers.delete(id); await callback(); };
-  location.hash = mode === "maintenance-navigation" ? "#/ask" : "#/ingestion?source=api";
+  location.hash = mode === "maintenance-navigation" ? "#/ask?arch=demo" : "#/ingestion?source=api";
   (0, eval)(source);
   if (mode === "maintenance-navigation") {
     await settle(() => $("[data-ingestion-recovery-link]"));
@@ -113,7 +113,7 @@ async function run(html, source, css, mode) {
     $("[data-ingestion-recover]").click();
     await settle(() => $("[data-ingestion-maintenance]").hidden && !$("[data-ingestion-start]").disabled);
     check(requests.filter((entry) => entry.url.endsWith("/recover")).length === 1, "Recovery click did not execute once.");
-    location.hash = "#/library";
+    location.hash = "#/library?arch=demo";
     await settle(() => $(".library-page"));
     await settle(() => $("#sidebar-foot b")?.textContent === "0");
     check(catalogCount > 0 && $("#sidebar-foot").querySelectorAll("b").length === 2, "Recovery did not reload the regular catalog counts.");
@@ -240,7 +240,7 @@ async function run(html, source, css, mode) {
   check(!timers.size, "Cancelled batch must not poll.");
   $(`[data-batch="${latest.id}"] [data-batch-action=run]`).click();
   await settle(() => timers.size === 1);
-  location.hash = "#/library";
+  location.hash = "#/library?arch=demo";
   await settle(() => $(".library-page"));
   check(!timers.size, "Leaving ingestion failed to clear polling.");
   location.hash = "#/ingestion?source=api";

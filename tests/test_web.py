@@ -48,5 +48,5 @@ def test_page_render_and_bounds():
 
 
 def test_frontend_is_served():
-    assert "混合键合知识图谱" in client.get("/").text
+    assert "<title>混合键合资料知识库</title>" in client.get("/").text
     assert client.get("/static/app.js").status_code == 200

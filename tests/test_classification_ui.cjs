@@ -93,6 +93,9 @@ async function run(html, source, css, mode) {
       return json(taxonomy);
     }
     if (url === "/api/chat/status") return json({ configured: true, provider: "mock", model: "mock" });
+    if (url === "/api/native/status") return json({ published: 2, pending: 0, held: 0, catalog: 5, generation: 7, active: [],
+      documents: [{ doc_id: "P1", title: "Copper bonding experiment", pages: 3, chunks: 11, pdf_sha256: "a" },
+                  { doc_id: "P3", title: "Polymer bonding review", pages: 3, chunks: 4, pdf_sha256: "b" }] });
     throw new Error(`Unexpected request: ${url}`);
   };
   // The library lists each paper once per group it belongs to; ids() keeps first-appearance order.
@@ -107,13 +110,13 @@ async function run(html, source, css, mode) {
   };
   const cell = (a, b) => document.querySelector(`.lib-cell[data-pick-a="${a}"][data-pick-b="${b}"]`).click();
   const rowLabels = () => [...document.querySelectorAll(".lib-matrix tbody th")].map((th) => th.textContent.trim());
-  location.hash = mode === "delayed" ? "#/ask" : "#/library";
+  location.hash = mode === "delayed" ? "#/ask?arch=demo" : "#/library?arch=demo";
   (0, eval)(source);
   if (mode === "delayed") {
     await settle(() => document.querySelector(".chat-composer"));
     check(!document.querySelector(".lib-matrix"), "Delayed classification blocked the original page.");
     resolveTaxonomy();
-    location.hash = "#/library";
+    location.hash = "#/library?arch=demo";
     await settle(() => document.querySelectorAll('[data-layer="l1"] option').length === 8);
     same(ids(), ["P1", "P3", "P2", "P4", "P5"], "Catalog after delayed taxonomy");
     return { mode, passed: true, checks: ["optional taxonomy does not block questions"] };
@@ -126,7 +129,7 @@ async function run(html, source, css, mode) {
     document.querySelector('.lib-paper[data-doc="P5"]').click();
     check(document.querySelector(".classification-detail").textContent.includes("尚未分类"), "Missing classification should be explicit.");
     check(document.querySelector('#drawer-body a[href="/api/papers/P5/pdf"]'), "Fallback lost original PDF.");
-    location.hash = "#/ask";
+    location.hash = "#/ask?arch=demo";
     await settle(() => document.querySelector(".chat-composer"));
     check(errors.length === 0, `Fallback errors: ${errors.join(", ")}`);
     return { mode, passed: true, checks: ["taxonomy failure", "period fallback", "missing classification", "original PDF", "questions unaffected"] };
@@ -165,9 +168,9 @@ async function run(html, source, css, mode) {
   layer("l1", "methods"); layer("l2", "methods");
   check(document.querySelector('[data-layer="l2"]').value === "", "Second layer cannot repeat the first.");
   layer("l1", "category"); layer("l2", "routes");
-  location.hash = "#/ask";
+  location.hash = "#/ask?arch=demo";
   await settle(() => document.querySelector(".chat-composer"));
-  location.hash = "#/library?l1=document_form&l2=access_route";
+  location.hash = "#/library?l1=document_form&l2=access_route&arch=demo";
   await settle(() => document.querySelector('[data-layer="l1"]')?.value === "document_form");
   check(document.querySelector('[data-layer="l2"]').value === "", "Unknown second layer should fall back to a single layer.");
   same(rowLabels(), ["期刊论文", "报告幻灯片", "未标注"], "Layer from URL");
@@ -211,6 +214,15 @@ async function run(html, source, css, mode) {
   await settle(() => document.querySelector("#drawer.open .markdown-content table"));
   check(!document.querySelector(".markdown-content").hidden, "Shareable URL failed to open Markdown reading.");
   document.querySelector("#drawer-close").click();
+  // RAG-Anything reuses the layered library, limited to its published documents and counting index chunks.
+  location.hash = "#/library?arch=raganything&channel=subscription";
+  await settle(() => document.querySelector(".lib-matrix") && location.hash.includes("arch=raganything") && ids().length === 2);
+  same(ids(), ["P1", "P3"], "RAG-Anything library lists only published documents");
+  check(document.querySelector('.lib-paper[data-doc="P1"] .lib-paper-claims').textContent.includes("11"), "Index chunk count missing.");
+  check(document.querySelector(".page-head p").textContent.includes("2 篇已发布文献"), "RAG-Anything library headline missing.");
+  check(document.querySelector(".lib-tabs a:last-child").textContent.includes("实体与关系"), "RAG-Anything second tab should be the entity view.");
+  location.hash = "#/library?arch=demo&channel=subscription";
+  await settle(() => ids().length === 5);
   check(errors.length === 0, `Browser errors: ${errors.join(", ")}`);
   check(requests.every((request) => request.method === "GET"), "UI regression must not call a model.");
   return { mode, passed: true, checks: ["category x route matrix", "zero counts shown", "support stages set apart", "unspecified last",

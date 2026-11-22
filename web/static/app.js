@@ -37,10 +37,11 @@
                       connectionDraft: null, connectionEdited: false } };
   const chatSessions = new Map();
   const nativeSearch = { ...ui.search, mode: "native" };
-  const archNames = { demo: "简易自制架构 Demo", raganything: "RAG-Anything" };
-  let arch = "demo", channel = "subscription";
+  const archNames = { demo: "旧版 Demo", raganything: "RAG-Anything" };
+  // RAG-Anything is the main library; the self-built Demo stays available for comparison.
+  let arch = "raganything", channel = "subscription";
   try {
-    if (localStorage.getItem("kg-arch") === "raganything") arch = "raganything";
+    if (localStorage.getItem("kg-arch") === "demo") arch = "demo";
     if (localStorage.getItem("kg-channel") === "api") channel = "api";
   } catch (_) {}
   function chatSession() {
@@ -63,8 +64,8 @@
   function channelPicker() {
     const box = h(`<div class="channel-picker"><span>生成接口</span>
       <div class="segmented channel-options" role="group" aria-label="选择生成接口">
-        <button type="button" data-via="api">通用 API</button><button type="button" data-via="subscription">Codex 订阅</button></div>
-      <select class="select" aria-label="生成接口"><option value="api">通用 API</option><option value="subscription">Codex 订阅</option></select></div>`);
+        <button type="button" data-via="api">通用 API</button><button type="button" data-via="subscription">CLI 订阅</button></div>
+      <select class="select" aria-label="生成接口"><option value="api">通用 API</option><option value="subscription">CLI 订阅</option></select></div>`);
     box.querySelectorAll("[data-via]").forEach(button => {
       button.classList.toggle("on", button.dataset.via === channel);
       button.setAttribute("aria-pressed", String(button.dataset.via === channel));
@@ -74,6 +75,11 @@
     select.value = channel;
     select.onchange = () => switchMode(arch, select.value);
     return box;
+  }
+  // The subscription channel runs a local CLI account; the backend reports which one, so nothing here names a vendor.
+  function cliLabel(status) {
+    const effort = status?.effort ? String(status.effort).replace(/^./, (c) => c.toUpperCase()) : "";
+    return [status?.provider || "本机 CLI", status?.model, effort].filter(Boolean).join(" · ");
   }
   function paperFor(id) {
     return arch === "raganything" ? state.nativePapers?.get(id) : state.paperById[id];
@@ -326,7 +332,7 @@
         <blockquote class="quote">${esc(e.quote)}</blockquote></div>`).join("")}</div>
       <h4>来源文献</h4>
       <a class="paper-ref" data-paper="${esc(claim.doc_id)}">${esc(paper.title)}<small>${esc(claim.doc_id)}${paper.year ? " · " + paper.year : ""}</small></a>
-      ${paper.doi ? `<div class="links" style="margin-top:10px"><a class="btn" target="_blank" rel="noopener" href="${esc(doiUrl(paper.doi))}">${icon("ext")}DOI</a></div>` : ""}
+      ${paper.doi ? `<div class="links mt-sm"><a class="btn" target="_blank" rel="noopener" href="${esc(doiUrl(paper.doi))}">${icon("ext")}DOI</a></div>` : ""}
       <h4>证据原页</h4>
     </div>`);
     if (pages.length) {
@@ -427,7 +433,7 @@
         ${paper.doi ? `<dt>DOI</dt><dd><code>${esc(paper.doi)}</code></dd>` : ""}
         ${paper.relevance_reason ? `<dt>纳入理由</dt><dd>${esc(paper.relevance_reason)}</dd>` : ""}
       </dl>
-      <div class="links" style="margin-top:14px">
+      <div class="links mt-md">
         ${paper.has_markdown ? `<a class="btn primary" href="#/papers?doc=${encodeURIComponent(paper.doc_id)}&read=markdown" data-read-markdown>${icon("book")}阅读 Markdown</a>` : ""}
         ${paper.doi ? `<a class="btn" target="_blank" rel="noopener" href="${esc(doiUrl(paper.doi))}">${icon("ext")}DOI / 出版页</a>` : ""}
         ${source && /^https?:/.test(source) ? `<a class="btn" target="_blank" rel="noopener" href="${esc(source)}">${icon("ext")}公开全文来源</a>` : ""}
@@ -584,7 +590,7 @@
     const native = arch === "raganything", via = channel, subscription = via === "subscription";
     const s = chatSession();
     const el = h(`<div class="page ask-page">
-      <div class="page-head"><div><h1>论文问答</h1><p>${native ? `RAG-Anything · ${state.native?.published ?? 0} 篇已发布文献 · PDF 原页引用` : `简易自制架构 Demo · ${state.summary.papers} 篇文献 · 原文与知识记录`}</p></div>
+      <div class="page-head"><div><h1>论文问答</h1><p>${native ? `${archNames.raganything} · ${state.native?.published ?? 0} 篇已发布文献 · 回答引用 PDF 原页` : `${archNames.demo} · ${state.summary.papers} 篇文献 · 回答引用原文与知识记录`}</p></div>
         <button class="btn" type="button" data-chat-clear>清空会话</button></div>
       <section class="card chat-status" aria-live="polite"><div class="chat-status-copy"></div><div class="links"><button class="btn" type="button" data-chat-settings>模型设置</button><button class="btn" type="button" data-chat-refresh>重新检查连接</button></div></section>
       <section class="card chat-config" hidden>
@@ -671,7 +677,7 @@
       settings.hidden = subscription;
       config.hidden = subscription || (configured && !s.configOpen);
       if (subscription) {
-        label.textContent = s.statusLoading ? "正在读取订阅状态…" : configured ? "Codex 订阅问答" : "订阅问答暂不可用";
+        label.textContent = s.statusLoading ? "正在读取订阅状态…" : configured ? `${s.status?.provider || "CLI"} 订阅问答` : "订阅问答暂不可用";
         message.textContent = s.statusError || s.status?.message || "正在读取状态…";
         refresh.textContent = "刷新状态";
       }
@@ -917,13 +923,12 @@
 
   function nativeLibraryView(params, graph = false) {
     const docs = [...state.nativePapers.values()].sort((a, b) => a.title.localeCompare(b.title));
-    const el = h(`<div class="page library-page"><div class="page-head"><div><h1>${graph ? "实体与关系" : "文献库"}</h1>
-      <p>RAG-Anything · ${docs.length} 篇已发布文献</p></div>${libraryTabs(graph ? "claims" : "library")}</div></div>`);
-    if (!docs.length) { el.append(h(emptyState("原生索引尚未发布文献。"))); return el; }
-    const panel = h('<section class="card native-panel"></section>');
-    el.append(panel);
+    const el = h(`<div class="page library-page"><div class="page-head"><div><h1>文献库</h1>
+      <p>${graph ? `${archNames.raganything} · 每篇文献抽取的实体与关系，点击实体查看与它相连的关系` : `${archNames.raganything} · ${docs.length} 篇已发布文献`}</p></div>${libraryTabs(graph ? "claims" : "library")}</div></div>`);
+    if (!docs.length) { el.append(h(emptyState("RAG-Anything 索引尚未发布文献。"))); return el; }
     if (!graph) {
-      panel.innerHTML = `${searchInput("data-filter-native", "按文献标题筛选")}<ul class="native-documents"></ul>`;
+      const panel = h(`<section class="card card-pad">${searchInput("data-filter-native", "按文献标题筛选")}<ul class="native-documents"></ul></section>`);
+      el.append(panel);
       const input = $("[data-filter-native]", panel), list = $("ul", panel);
       input.value = params.get("q") || "";
       const render = () => {
@@ -935,30 +940,48 @@
       input.oninput = render; render();
       return el;
     }
-    panel.innerHTML = `<label class="native-doc-picker">文献<select class="select">${docs.map(d => `<option value="${esc(d.doc_id)}">${esc(d.title)}</option>`).join("")}</select></label>
-      <div data-graph-body aria-live="polite"></div>`;
-    const pick = $("select", panel), body = $("[data-graph-body]", panel);
+    const bar = h(`<div class="card filter-bar"><div class="toolbar">
+        <select class="select graph-doc" aria-label="文献">${docs.map(d => `<option value="${esc(d.doc_id)}">${esc(d.title)}</option>`).join("")}</select>
+        ${searchInput("data-graph-filter", "筛选实体…")}
+        <a class="btn" data-graph-pdf>${icon("pdf")}打开原页</a>
+      </div></div>`);
+    const counts = h('<div class="count-row"><span class="count" role="status" aria-live="polite"></span><button class="btn sm ghost" type="button" data-graph-clear hidden>' + icon("clear") + '取消选择</button></div>');
+    const body = h('<div class="graph-layout" aria-live="polite"></div>');
+    el.append(bar, counts, body);
+    const pick = $("select", bar), filter = $("[data-graph-filter]", bar), pdf = $("[data-graph-pdf]", bar);
     if (state.nativePapers.has(params.get("doc"))) pick.value = params.get("doc");
-    let version = 0;
+    let version = 0, data = null, selected = "";
+    const render = () => {
+      if (!data) return;
+      const term = filter.value.trim().toLowerCase();
+      // Rank entities by how many relations they take part in, so the central concepts come first.
+      const degree = new Map(data.entities.map(n => [n, 0]));
+      data.relations.forEach(([a, b]) => { degree.set(a, (degree.get(a) || 0) + 1); degree.set(b, (degree.get(b) || 0) + 1); });
+      const names = [...degree.keys()].filter(n => n.toLowerCase().includes(term))
+        .sort((a, b) => degree.get(b) - degree.get(a) || a.localeCompare(b));
+      if (selected && !degree.has(selected)) selected = "";
+      const pairs = selected ? data.relations.filter(pair => pair.includes(selected)) : data.relations;
+      $(".count", counts).textContent = `${degree.size} 个实体 · ${data.relations.length} 条关系${selected ? ` · 已选“${selected}”，相连关系 ${pairs.length} 条` : ""}`;
+      $("[data-graph-clear]", counts).hidden = !selected;
+      body.innerHTML = `<section class="card graph-entities"><h3>实体<span>${names.length}</span></h3>
+          <ul>${names.map(n => `<li><button type="button" class="${n === selected ? "on" : ""}" data-entity="${esc(n)}"><span>${esc(n)}</span><small>${degree.get(n)}</small></button></li>`).join("") || '<li class="muted">没有匹配的实体。</li>'}</ul></section>
+        <section class="card graph-relations"><h3>${selected ? `与“${esc(selected)}”相连的关系` : "全部关系"}<span>${pairs.length}</span></h3>
+          <ul>${pairs.map(([a, b]) => `<li><span>${esc(a)}</span><i aria-hidden="true">↔</i><span>${esc(b)}</span></li>`).join("") || '<li class="muted">没有关系记录。</li>'}</ul></section>`;
+      body.querySelectorAll("[data-entity]").forEach(b => (b.onclick = () => { selected = selected === b.dataset.entity ? "" : b.dataset.entity; render(); }));
+    };
     const load = async () => {
       const id = pick.value, request = ++version;
-      body.textContent = "正在读取文献图谱…";
+      pdf.href = modeHref("papers", new URLSearchParams({doc:id, read:"pdf"}));
+      data = null; selected = "";
+      body.innerHTML = '<div class="card loading"><span class="spinner"></span> 正在读取文献图谱…</div>';
       try {
-        const data = await api("/api/native/documents/" + encodeURIComponent(id) + "/graph");
+        const result = await api("/api/native/documents/" + encodeURIComponent(id) + "/graph");
         if (version !== request) return;
-        body.innerHTML = `<p class="native-links"><a href="${modeHref("papers", new URLSearchParams({doc:id,read:"pdf"}))}">打开论文原页</a></p>
-          ${searchInput("data-graph-filter", "筛选实体或关系")}<div class="native-graph-results"></div>`;
-        const filter = $("input", body), rows = $(".native-graph-results", body);
-        const render = () => {
-          const term = filter.value.trim().toLowerCase();
-          const names = data.entities.filter(n => n.toLowerCase().includes(term));
-          const pairs = data.relations.filter(pair => pair.some(n => n.toLowerCase().includes(term)));
-          rows.innerHTML = `<h3>实体 · ${names.length}</h3><div class="chips">${names.map(n => `<span class="chip">${esc(n)}</span>`).join("") || "无匹配实体"}</div>
-            <h3>关系 · ${pairs.length}</h3><ul class="native-pairs">${pairs.map(([a,b]) => `<li>${esc(a)} ↔ ${esc(b)}</li>`).join("") || "<li>无匹配关系</li>"}</ul>`;
-        };
-        filter.oninput = render; render();
-      } catch (error) { if (request === version) body.textContent = error.message; }
+        data = result; render();
+      } catch (error) { if (request === version) body.innerHTML = `<div class="notice">${icon("warn")}${esc(error.message)}</div>`; }
     };
+    filter.oninput = render;
+    $("[data-graph-clear]", counts).onclick = () => { selected = ""; render(); };
     pick.onchange = () => { history.replaceState(null, "", modeHref("claims", new URLSearchParams({doc:pick.value}))); load(); };
     el.dispose = () => { version++; }; load();
     return el;
@@ -971,10 +994,15 @@
     for (const id of ["l1", "l2", "a", "b", "q"]) if (params.has(id)) f[id] = params.get(id);
     if (!available.includes(f.l1)) f.l1 = available.includes("category") ? "category" : "period";
     if (f.l2 && (!available.includes(f.l2) || f.l2 === f.l1)) f.l2 = "";
-    const s = state.summary;
+    const s = state.summary, native = arch === "raganything";
+    const catalog = native ? state.papers.filter((p) => state.nativePapers.has(p.doc_id)) : state.papers;
+    const nativeDocs = native ? [...state.nativePapers.values()] : [];
+    const headline = native
+      ? [`${archNames.raganything} · ${nativeDocs.length} 篇已发布文献`, `${nativeDocs.reduce((n, d) => n + d.pages, 0)} 页 PDF 原页`, `${nativeDocs.reduce((n, d) => n + d.chunks, 0)} 个索引片段`]
+      : [`${archNames.demo} · ${s.papers} 份资料`, s.pages != null && `${s.pages} 页 PDF 原页`, `${s.claims} 条知识记录`];
     const el = h(`<div class="page library-page">
-      <div class="page-head"><div><h1>文献库</h1><p>${[`${s.papers} 份资料`, s.pages != null && `${s.pages} 页 PDF 原页`, `${s.claims} 条知识记录`].filter(Boolean).join(" · ")}</p></div>${libraryTabs("library")}</div>
-      ${state.taxonomy ? "" : `<div class="notice" style="margin-bottom:14px">${icon("warn")}<span>${state.taxonomyError ? "工艺分类暂不可用" : "正在载入工艺分类"}，暂时只能按发表年代分层。</span></div>`}
+      <div class="page-head"><div><h1>文献库</h1><p>${headline.filter(Boolean).join(" · ")}</p></div>${libraryTabs("library")}</div>
+      ${state.taxonomy ? "" : `<div class="notice mb-md">${icon("warn")}<span>${state.taxonomyError ? "工艺分类暂不可用" : "正在载入工艺分类"}，暂时只能按发表年代分层。</span></div>`}
       <section class="card lib-panel">
         <div class="lib-controls">
           <label class="lib-layer"><span>第一层</span><select class="select" data-layer="l1">${available.map((id) => `<option value="${id}">${LIB_DIMS[id].label}</option>`).join("")}</select></label>
@@ -1028,7 +1056,7 @@
       const term = f.q.trim().toLowerCase();
       const searchText = (p) => [p.title, p.doc_id, p.doi, p.short_label, p.topic, authorsText(p),
         ...["materials", "topics", "keywords"].flatMap((k) => p.classification?.[k] || [])].join(" ").toLowerCase();
-      const pool = state.papers.filter((p) => !term || searchText(p).includes(term));
+      const pool = catalog.filter((p) => !term || searchText(p).includes(term));
       const v1 = new Map(pool.map((p) => [p.doc_id, d1.values(p)]));
       const v2 = d2 ? new Map(pool.map((p) => [p.doc_id, d2.values(p)])) : null;
       const rowCount = {}, colCount = {}, cell = {};
@@ -1078,7 +1106,7 @@
       const shownRows = f.a ? [f.a] : rows;
       const visible = pool.filter((p) => (!f.a || inA(p, f.a)) && (!f.b || inB(p, f.b)));
       const label = [f.a && d1.labelOf(f.a), f.b && d2.labelOf(f.b)].filter(Boolean).join(" · ");
-      $(".lib-status .count", el).textContent = `${visible.length} / ${state.papers.length} 份资料${label ? " · " + label : ""}${term ? ` · 含“${f.q.trim()}”` : ""}`;
+      $(".lib-status .count", el).textContent = `${visible.length} / ${catalog.length} ${native ? "篇文献" : "份资料"}${label ? " · " + label : ""}${term ? ` · 含“${f.q.trim()}”` : ""}`;
       $("[data-lib-clear]", el).hidden = !(f.a || f.b);
       const focused = !!(f.a || f.b);
       const PREVIEW = 4;
@@ -1086,7 +1114,8 @@
           <span class="lib-paper-year">${esc(p.year || "—")}</span>
           <span class="lib-paper-main"><span class="lib-paper-title">${esc(p.title)}</span>
           <span class="lib-paper-meta">${esc(p.short_label || p.doc_id)}${p.classification?.document_form ? " · " + esc(facetLabel("document_form", p.classification.document_form)) : p.is_review ? " · 综述" : ""}</span></span>
-          <span class="lib-paper-claims" title="知识记录">${p.claim_count ?? 0}<small>条记录</small></span></button>`;
+          ${native ? `<span class="lib-paper-claims" title="索引片段">${state.nativePapers.get(p.doc_id)?.chunks ?? 0}<small>个片段</small></span>`
+            : `<span class="lib-paper-claims" title="知识记录">${p.claim_count ?? 0}<small>条记录</small></span>`}</button>`;
       const block = (key, list) => {
         const open = focused || expanded.has(key) || list.length <= PREVIEW + 1;
         return `${(open ? list : list.slice(0, PREVIEW)).map(paperRow).join("")}${open ? "" : `<button type="button" class="lib-more" data-expand="${esc(key)}">展开其余 ${list.length - PREVIEW} 份</button>`}`;
@@ -1112,13 +1141,14 @@
     return el;
   }
 
+  const CLAIM_PAGE = 60;
   function claimsView(params) {
     if (params.get("stage")) ui.claims.stage = params.get("stage");
     if (params.get("type")) ui.claims.type = params.get("type");
     if (params.get("doc")) ui.claims.doc = params.get("doc");
     const materials = [...new Set(state.claims.map((c) => c.material_system))].sort();
     const el = h(`<div class="page">
-      <div class="page-head"><div><h1>文献库</h1><p>知识记录：材料 · 样品 · 阶段 · 条件 · 原文引文。点击卡片查看原页，← → 切换上下条</p></div>${libraryTabs("claims")}</div>
+      <div class="page-head"><div><h1>文献库</h1><p>${archNames.demo} · 知识记录按材料、样品、阶段、条件与原文引文整理；点击卡片查看原页，← → 切换上下条</p></div>${libraryTabs("claims")}</div>
       <div class="card filter-bar">
         <div class="toolbar">
           ${searchInput('data-f="q"', "筛选陈述、数值、物理量…")}
@@ -1142,8 +1172,9 @@
       inputs.forEach((input) => (input.value = ""));
       render();
     };
-    let firstRender = true;
-    const render = () => {
+    let firstRender = true, shown = CLAIM_PAGE;
+    const render = (more = false) => {
+      shown = more ? shown + CLAIM_PAGE : CLAIM_PAGE;
       const q = f.q.trim().toLowerCase();
       const base = state.claims.filter((c) => (!f.material || c.material_system === f.material) && (!f.doc || c.doc_id === f.doc) &&
         (!f.type || c.claim_type === f.type) &&
@@ -1158,12 +1189,13 @@
       const list = $(".claim-list", el);
       list.classList.remove("stagger", "fade-in");
       if (!rows.length) { list.innerHTML = emptyState("没有同时满足这些条件的知识记录。"); return; }
-      list.innerHTML = rows.map((c) => `<div class="card claim-card lift" data-id="${esc(c.claim_id)}" style="--stage-color:${stageColor(c.stage)}" tabindex="0">
+      list.innerHTML = rows.slice(0, shown).map((c) => `<div class="card claim-card lift" data-id="${esc(c.claim_id)}" style="--stage-color:${stageColor(c.stage)}" tabindex="0">
         <span class="go">${icon("arrow")}</span>
         <p class="statement">${esc(c.statement)}</p>
         <div class="meta"><span class="chip mono">${esc(c.claim_id)}</span>${stageChip(c.stage)}<span class="chip">${esc(c.material_system)}</span><span class="chip" title="${esc(state.paperById[c.doc_id]?.title)}">${icon("pdf")}${esc(c.doc_id)} · p${[...new Set(c.evidence.map((e) => e.pdf_page))].join(",")}</span></div>
         ${c.value_text ? `<div class="value">${esc(c.value_text)}</div>` : ""}
-      </div>`).join("");
+      </div>`).join("") + (rows.length > shown ? `<div class="more"><button class="btn" type="button" data-more>显示更多（还有 ${rows.length - shown} 条）</button></div>` : "");
+      $("[data-more]", list)?.addEventListener("click", () => render(true));
       const ids = rows.map((c) => c.claim_id);
       list.querySelectorAll("[data-id]").forEach((card) => {
         card.onclick = () => openClaim(card.dataset.id, ids);
@@ -1185,14 +1217,14 @@
     if (incoming) s.q = incoming;
     let searchGeneration = 0;
     const el = h(`<div class="page">
-      <div class="page-head"><div><h1>全文检索</h1><p>在本机检索已发布文献，点击结果可核对 PDF 原页。</p></div></div>
+      <div class="page-head"><div><h1>全文检索</h1><p>${native ? `${archNames.raganything} · 在 ${state.native?.published ?? 0} 篇已发布文献中检索原文片段` : `${archNames.demo} · 在 ${state.summary?.papers ?? 0} 篇文献中检索原文段落`}，点击结果可核对 PDF 原页。</p></div></div>
       <form class="card search-box">
         <label class="input-icon">${icon("search")}<input class="input" name="q" placeholder="例如：Cu pumping、plasma SiCN，或中文：退火温度对接触电阻的影响" autocomplete="off" data-page-search></label>
         <select class="select" name="mode" aria-label="检索方式" ${native ? "hidden" : ""}>${native ? '<option value="native">原生向量检索</option>' : '<option value="auto">自动检索</option><option value="keyword">关键词</option><option value="semantic">语义检索</option>'}</select>
         <select class="select" name="limit"><option value="5">5 条</option><option value="10">10 条</option><option value="20">20 条</option></select>
         <button class="btn primary" type="submit">${icon("search")}检索</button>
       </form>
-      <p class="count mode-hint" style="margin:8px 2px 0"></p>
+      <p class="count mode-hint mt-sm"></p>
       <div class="results"></div>
     </div>`);
     const form = $("form", el);
@@ -1225,7 +1257,7 @@
         }));
         return;
       }
-      if (!s.results.length) { results.innerHTML = `<div style="margin-top:16px">${emptyState("当前查询未返回证据。可以调整材料或工艺术语；未命中不等于不存在相关证据。", "search")}</div>`; return; }
+      if (!s.results.length) { results.innerHTML = `<div class="mt-md">${emptyState("当前查询未返回证据。可以调整材料或工艺术语；未命中不等于不存在相关证据。", "search")}</div>`; return; }
       const rankingScore = (r) => Math.abs(r.retrieval_score ?? r.rrf_score ?? r.score ?? 0);
       const scoreLabel = (r) => r.retrieval_score != null ? `综合排序 ${r.retrieval_score.toFixed(4)}`
         : r.rrf_score != null ? `融合排序 RRF ${r.rrf_score.toFixed(4)}`
@@ -1262,7 +1294,7 @@
       preview.append(h(`<div class="detail">
         <div class="chips"><span class="chip">${r.method === "native" ? "原生索引片段" : esc(r.evidence_id)}</span><span class="chip">${scoreLabel(r)}</span></div>
         ${r.retrieval_notice ? `<p class="notice">${esc(r.retrieval_notice)}</p>` : ""}
-        ${r.retrieval_reasons?.length ? `<p class="muted" style="font-size:12px">检索依据：${r.retrieval_reasons.map((reason) => esc(reasonLabel(reason))).join("；")}</p>` : ""}
+        ${r.retrieval_reasons?.length ? `<p class="muted fs-xs">检索依据：${r.retrieval_reasons.map((reason) => esc(reasonLabel(reason))).join("；")}</p>` : ""}
         <blockquote class="quote">${highlight(r.text, s.executed)}</blockquote>
         <a class="paper-ref" data-paper="${esc(r.doc_id)}">${esc(paper.title)}<small>${esc(r.doc_id)}${paper.year ? " · " + paper.year : ""}</small></a>
         ${linked.length ? `<h4>此段落支持的知识记录</h4><ul class="side-list">${linked.map((c) => `<li data-claim="${esc(c.claim_id)}"><span class="dot" style="background:${stageColor(c.stage)}"></span>${esc(c.statement)}</li>`).join("")}</ul>` : ""}
@@ -1289,7 +1321,7 @@
       e.preventDefault();
       const generation = ++searchGeneration;
       s.q = form.q.value.trim(); s.limit = +form.limit.value;
-      if (!s.q) { results.innerHTML = `<div class="notice" style="margin-top:16px">${icon("warn")}请输入检索内容。</div>`; return; }
+      if (!s.q) { results.innerHTML = `<div class="notice mt-md">${icon("warn")}请输入检索内容。</div>`; return; }
       const usesModel = ["native", "semantic"].includes(s.mode) || (s.mode === "auto" && /[\u3400-\u9fff\uf900-\ufaff]/u.test(s.q));
       results.innerHTML = `<div class="loading"><span class="spinner"></span>　${usesModel ? "正在本地检索相关原文（首次需载入语义模型）……" : "正在检索……"}</div>`;
       try {
@@ -1306,7 +1338,7 @@
       } catch (err) {
         if (generation !== searchGeneration) return;
         s.results = null;
-        results.innerHTML = `<div class="notice" style="margin-top:16px">${icon("warn")}${esc(err.message)}</div>`;
+        results.innerHTML = `<div class="notice mt-md">${icon("warn")}${esc(err.message)}</div>`;
       }
     };
     renderResults();
@@ -1411,7 +1443,7 @@
         <div data-native-current></div>
         <details data-ready hidden><summary></summary><ul class="native-waiting-list"></ul></details>
         <section class="native-review" data-review hidden><h3></h3>
-          <p>调度器会自动复核已标记的裁图。复核后仍有疑点的文献保留问题记录。</p>
+          <p>复核后仍有疑点的页面会进入自动修复和复验。查看每篇文献的处理结果与剩余疑点。</p>
           <ul class="native-waiting-list"></ul></section>
         <form class="native-settings" hidden><label>每批处理的文献数 <select data-native-width></select></label>
           <button type="submit" class="btn sm" disabled>保存</button>
@@ -1449,7 +1481,7 @@
             : `<progress aria-label="原生入库进度" value="${data.published}" max="${Math.max(data.catalog, 1)}"></progress>`}
           <div class="native-queue"><span class="chip${["needs_attention","interrupted"].includes(data.phase) ? " warn" : ""}">${esc(phases[data.phase] || "队列状态待确认")}</span>
             ${scoped ? `<span class="chip">仅处理指定文献</span>` : ""}
-            <span>Codex CLI · ${esc(data.model)} · ${data.effort === "high" || !data.effort ? "High" : esc(data.effort)}</span>
+            <span>${esc(cliLabel(data))}</span>
             ${controls && Number.isFinite(data.run_elapsed_seconds) ? `<span>本轮用时 ${elapsedTime(data.run_elapsed_seconds)}</span>` : ""}</div>
           ${!controls && data.active.length ? `<p>当前文献 · ${data.active.map(row => esc(row.doc_id)).join("、")}</p>` : ""}
           ${!detailed && data.held ? `<p>${data.held} 篇等待授权。</p>` : ""}`;
@@ -1461,7 +1493,7 @@
           const alerts = [];
           if (data.phase === "interrupted") alerts.push("入库程序已退出，本批未发布的进度保存在检查点中。点“继续文献入库”会从检查点接着处理。");
           if (data.phase === "needs_attention") alerts.push("调度器停在需要处理的状态，暂时不会自动继续。请查看下方文献的阶段，或让后端检查入库日志。");
-          if (data.phase === "waiting_for_subscription_reset") alerts.push("Codex 订阅额度已用完，额度恢复后会自动接着处理同一批文献。");
+          if (data.phase === "waiting_for_subscription_reset") alerts.push(`${data.provider || "CLI"} 订阅额度已用完，额度恢复后会自动接着处理同一批文献。`);
           if (scoped && data.global_queue_paused) alerts.push("当前只处理指定的文献，完整队列仍保持暂停。");
           $("[data-native-alerts]", panel).innerHTML = alerts.map(text => `<p class="notice">${esc(text)}</p>`).join("");
           const current = $("[data-native-current]", panel);
@@ -1577,6 +1609,13 @@
           line.textContent = (finding.page ? "第 " + finding.page + " 页 · " : "") + (finding.detail || finding.reason);
           review.append(document.createElement("br"), line);
         }
+        const repairLabels = {accepted:"修复通过复验", rejected:"修复未通过复验", unresolved:"未取得可靠修复方案"};
+        for (const repair of data.crop_review.repair_pages || []) {
+          const line = document.createElement("span");
+          line.textContent = `第 ${repair.page} 页 · ${repairLabels[repair.status] || "已尝试修复"}` +
+            (repair.reason ? ` · ${repair.reason}` : "");
+          review.append(document.createElement("br"), line);
+        }
         body.before(review);
       }
       const skipped = data.skipped || [];
@@ -1612,7 +1651,7 @@
           const provenance = {archived_image:"旧版保存的原图", pdf_crop:"按旧版坐标从原 PDF 补绘",
             pmc_figure:"同版 PMC 独立图文件", pdffigures2:"按 PDFFigures 2 坐标从原页补裁",
             pdffigures2_pdf_image:"按原页完整图像边界校正二次裁图",
-            pdf_form:"按原 PDF 内嵌图框补裁"}[item.preview_source];
+            pdf_form:"按原 PDF 内嵌图框补裁", llm_repair_pdf:"原页重裁并通过复验"}[item.preview_source];
           pages.get(item.page).push(`<figure><a href="${img}" target="_blank" rel="noopener" title="打开原尺寸裁图">
             <img loading="lazy" alt="${esc(name)}，PDF 第 ${item.page} 页" src="${img}"></a>
             <figcaption><strong>${esc(name)}</strong>${provenance ? `<small>${esc(provenance)}</small>` : ""}
@@ -1639,9 +1678,9 @@
     }
     if (params.get("regions")) return regionGallery(params.get("regions"));
     el.className = "page";
-    el.innerHTML = `<div class="page-head"><div><h1>文献入库</h1><p>RAG-Anything 按批处理清单中的 PDF：先审核裁图、解析页面，再同批建立索引，核验通过后一起发布到检索库。</p></div></div>`;
+    el.innerHTML = `<div class="page-head"><div><h1>文献入库</h1><p>RAG-Anything · 按批处理清单中的 PDF：先审核裁图、解析页面，再同批建立索引，核验通过后一起发布到检索库。</p></div></div>`;
     const panel = nativePanel(true);
-    el.append(panel, h(`<div class="native-links"><a href="${modeHref("search")}">检索已发布文献</a><span>继续入库时，Codex 订阅会按清单顺序处理剩余 PDF；已有进度的文献从检查点接着做。</span></div>`));
+    el.append(panel, h(`<p class="native-links count"><a href="${modeHref("search")}">检索已发布文献</a><span>继续入库时，CLI 订阅按清单顺序处理剩余 PDF；已有进度的文献从检查点继续。</span></p>`));
     el.dispose = panel.dispose;
     return el;
   }
@@ -1660,18 +1699,9 @@
     return el;
   }
   function reportView() {
-    if (arch === "demo") {
-      const el = window.KGReport.mount(document.createElement("div"), { summary: state.summary, icon });
-      el.querySelectorAll("[data-app]").forEach(link => link.href = modeHref(link.dataset.app));
-      return el;
-    }
-    const docs = state.native.documents;
-    const el = h(`<div class="page report-page"><header class="page-head"><div><h1>项目概况</h1><p>RAG-Anything · 发布版本 ${state.native.generation}</p></div></header></div>`);
-    const panel = nativePanel();
-    el.append(panel, h(`<section class="card native-panel"><h2>已发布索引</h2><p>${docs.reduce((n,d) => n+d.pages, 0)} 页 PDF · ${docs.reduce((n,d) => n+d.chunks, 0)} 个图文索引片段</p>
-      <h3>从文献到回答</h3><p>RAG-Anything 按原始 PDF 页组织文本、图表与公式，LightRAG 保存片段、实体与关系。提问时由本机 BGE-M3 召回片段，再定位原页，用所选接口生成并核对引用。</p>
-      <div class="native-links"><a href="${modeHref("library")}">浏览已发布文献</a><a href="${modeHref("claims")}">查看实体与关系</a></div></section>`));
-    el.dispose = panel.dispose;
+    // Both architectures share one report layout; RAG-Anything fills it from its live publish status.
+    const el = window.KGReport.mount(document.createElement("div"), { summary: state.summary || {}, native: arch === "raganything" ? state.native : null, icon });
+    el.querySelectorAll("[data-app]").forEach(link => link.href = modeHref(link.dataset.app));
     return el;
   }
   const routes = { ask: askView, ideas: ideasView, library: libraryView, claims: claimsView, ingestion: ingestionView, search: searchView, report: reportView };
@@ -1719,7 +1749,7 @@
     const navName = name === "claims" ? "library" : name;
     document.querySelectorAll("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.route === navName));
     moveNavIndicator();
-    document.title = `${ROUTE_LABELS[name]} · ${archNames[arch]} · 混合键合知识图谱`;
+    document.title = `${name === "claims" && arch === "raganything" ? "实体与关系" : ROUTE_LABELS[name]} · ${archNames[arch]} · 混合键合资料知识库`;
     view.firstElementChild?.dispose?.();
     closeDrawer();
     viewKeyHandler = null;
@@ -1729,6 +1759,7 @@
       if (arch === "raganything" && name !== "ingestion") await readNativeStatus();
       if (version !== routeVersion) return;
       if (arch === "demo" && (leavingIngestion || !state.summary || previousArch !== arch)) await refreshLibrary();
+      else if (arch === "raganything" && name === "library" && !state.summary) await refreshLibrary();
       if (version !== routeVersion) return;
       if (arch === "demo" && name !== "ingestion" && !state.summary) {
           view.innerHTML = '<div class="page"><div class="notice"><span>文献库正在更新或暂不可读取。<a href="#/ingestion?source=api" data-ingestion-recovery-link>查看旧库批次与恢复</a>，完成后可重新打开本页。</span></div></div>';
@@ -1736,7 +1767,8 @@
       }
       // A #/papers link carries reading options (doc, read, page), not library filters.
       const pageParams = path === "papers" ? new URLSearchParams() : params;
-      const el = arch === "raganything" && ["library","claims"].includes(name) ?
+      // Without the catalog the RAG-Anything library falls back to a plain title list.
+      const el = arch === "raganything" && (name === "claims" || (name === "library" && !state.papers.length)) ?
         nativeLibraryView(pageParams, name === "claims") : await routes[name](pageParams);
       if (version !== routeVersion) { el.dispose?.(); return; }
       el.classList.add("page-enter");
@@ -1813,13 +1845,13 @@
       state.taxonomy = taxonomy;
     }).catch(() => { state.taxonomyError = "工艺分类暂不可用"; }).finally(() => {
       taxonomyPending = false;
-      if (arch === "demo" && state.summary && !refreshingLibrary && /^#\/?(library|papers|overview|graph)(?:\?|$)/.test(location.hash)) route();
+      if (state.summary && !refreshingLibrary && /^#\/?(library|papers|overview|graph)(?:\?|$)/.test(location.hash)) route();
     });
   }
 
   function renderSidebarSummary() {
     $("#sidebar-foot").innerHTML = arch === "raganything"
-      ? `<p>RAG-Anything · ${state.native ? `<b>${state.native.published}</b> 篇已发布` : "正在读取索引"}</p><a href="${modeHref("ingestion")}">查看发布进度</a>`
+      ? (state.native ? `<p>已发布文献 · <b>${state.native.published}</b> 篇</p><p>入库清单 · <b>${state.native.catalog}</b> 篇</p>` : "<p>正在读取索引</p>")
       : state.summary ? `<p>文献目录 · <b>${state.summary.papers}</b> 篇</p><p>知识记录 · <b>${state.summary.claims}</b> 条</p>` : "<p>正在读取 Demo 目录</p>";
   }
 

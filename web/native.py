@@ -5,7 +5,6 @@ import base64
 import hashlib
 import json
 import random
-import shutil
 import subprocess
 import sys
 import threading
@@ -17,7 +16,6 @@ import pymupdf
 
 from kg_pilot import native_library
 from kg_pilot import decoration_filter
-from kg_pilot.codex_subscription import SOL_MODEL
 from kg_pilot import qa
 from kg_pilot.effective_evidence import FIELD, load_effective_evidence
 from kg_pilot.framework_qa import bind_quotes
@@ -71,11 +69,14 @@ def _gallery_path(root, doc_id, sha):
 
 @lru_cache(maxsize=96)
 def _review_status(path, modified):
-    from kg_pilot.native_crop_review import needs_followup
+    from kg_pilot.native_crop_review import needs_followup, needs_repair
 
     data=read_json(path)
     return {**{k:data.get(k) for k in ("status","selected_pages","held","revision")},
             "awaiting_followup":needs_followup(data, data.get("revision")),
+            "awaiting_repair":needs_repair(data, data.get("revision")),
+            "repair_pages":[{"page":p["page"],"status":p["status"],"reason":p.get("reason")}
+                            for p in data.get("llm_repair", {}).get("pages", [])],
             "visual_items":sum(not i.get("filter_reason") for i in data.get("items",[]))}
 
 
@@ -231,6 +232,10 @@ def _paper_progress(root, row, lane, published=None, *, observed=None):
                     result["stage"]="crop_review_held"
                 if audit.get("awaiting_followup"):
                     result["review_issue"]="等候自动复核" if lane.get("status") != "running" else "正在复核已标记问题"
+                elif audit.get("awaiting_repair"):
+                    result["review_issue"]="等候自动修复" if lane.get("status") != "running" else "正在按原页修复并复验"
+                elif audit.get("repair_pages"):
+                    result["review_issue"] = f"自动修复后仍有 {len(audit['held'])} 项疑点"
                 elif audit.get("held"):
                     result["review_issue"] = f"复核后仍有 {len(audit['held'])} 项疑点"
     if lane.get("phase")=="crops" and lane.get("status")=="running":
@@ -270,11 +275,19 @@ def status(pilot, *, progress=False):
     active = [lane for lane in state.get("queue_lanes", []) if lane.get("doc_id") not in docs
               and not (lane.get("prefetch") and lane["status"] in {"prepared", "interrupted"})
               ] if phase in {"running", "pausing"} else []
+    subscription = qa.subscription_status()
+    reset_at = scheduler.get("reset_at_unix")
+    quota = subscription["quota"]
+    if phase == "waiting_for_subscription_reset" and type(reset_at) is int and reset_at > 0:
+        quota = {"status": "waiting_for_reset", "reset_at": reset_at}
     result = {
+        **subscription,
+        "quota": quota,
+        "next_subscription": {key: subscription[key] for key in ("provider_id", "provider", "model", "effort")},
         "published": len(docs), "catalog": state["catalog"], "pending": state["pending"],
         "held": state["held"], "phase": phase, "generation": manifest["generation"],
-        "updated": manifest.get("updated"), "model": SOL_MODEL, "effort": state["effort"],
-        "cli_available": bool(shutil.which("codex")), "concurrency": state["queue_document_concurrency"],
+        "updated": manifest.get("updated"), "cli_available": subscription["available"],
+        "concurrency": state["queue_document_concurrency"],
         "max_concurrency": native_library.MAX_DOCUMENT_CONCURRENCY,
         "active_limit": scheduler.get("document_concurrency") if phase in {"running", "pausing"} else None,
         "batch_stage": scheduler.get("stage") if active else None,

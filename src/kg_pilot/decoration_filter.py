@@ -5,6 +5,9 @@ from PIL import Image, ImageOps
 from kg_pilot.pipeline import read_json
 
 
+AUTHOR_TABLE_REASON = "首页作者、单位与联系方式"
+
+
 def visual_templates(reviewed):
     samples = read_json(Path(__file__).with_name("publication_decoration_templates.json"))
     return [(sha, sample["aspect"], [int(mask, 16) for mask in sample["masks"]])

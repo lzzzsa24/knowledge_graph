@@ -59,7 +59,7 @@ async function run(html, sources, css, summary) {
     if (url === "/api/chat/status") return json({ configured: false });
     throw new Error(`Unexpected request: ${url}`);
   };
-  location.hash = "#/report";
+  location.hash = "#/report?arch=demo";
   for (const source of sources) (0, eval)(source);
   await settle(() => document.querySelector(".report-page .rp-stack"));
   const page = document.querySelector(".report-page");
@@ -73,19 +73,31 @@ async function run(html, sources, css, summary) {
   for (const layer of layers) check(layer.querySelector(".rp-layer-name").textContent && layer.querySelectorAll(".rp-tech .rp-mono").length >= 2, "Each layer needs named technologies.");
   const names = [...page.querySelectorAll(".rp-tech b")].map((b) => b.textContent);
   for (const tech of ["FastAPI", "BGE-M3", "Qdrant", "SQLite", "PyMuPDF", "Pydantic"]) check(names.includes(tech), `${tech} missing from the stack.`);
+  check(names.includes("CLI 订阅") && !page.textContent.includes("Codex CLI"), "Subscription channel should be described generically.");
   check(page.querySelectorAll(".rp-step").length === 6 && page.querySelectorAll(".rp-store").length === 3, "Flow steps or stores missing.");
   const routes = [...page.querySelectorAll(".rp-app")].map((a) => {
     check(a.hash.includes("arch=demo"), "Report link lost its workspace.");
     return a.hash.split("?")[0];
   });
   check(JSON.stringify(routes) === JSON.stringify(["#/search", "#/ask", "#/ideas", "#/library"]), `Feature links changed: ${routes}`);
-  check(page.querySelectorAll(".rp-bar").length === 4 && page.querySelectorAll(".rp-principles li").length === 4, "Growth or principles missing.");
+  check(page.querySelectorAll(".rp-bar").length === 5 && page.querySelectorAll(".rp-principles li").length === 4, "Growth or principles missing.");
   check(page.querySelectorAll(".rp-rag-step").length === 6 && [...page.querySelectorAll(".rp-title")].some((h) => h.textContent.includes("RAG")), "RAG pipeline missing.");
   const visibleText = page.innerText.replace(/\s+/g, " ").trim();
   check(visibleText.length < 1900, `Report should stay concise (${visibleText.length} visible chars).`);
   check(!page.innerHTML.includes("undefined") && !page.innerHTML.includes("NaN"), "Unfilled template value.");
   check(errors.length === 0, `UI errors: ${errors.join(", ")}`);
   check(requests.every((r) => r.method === "GET"), "Report page must only read.");
+  // RAG-Anything fills the same report layout from its publish status instead of mixing in the queue.
+  location.hash = "#/report?arch=raganything&channel=subscription";
+  await settle(() => document.querySelector(".report-page .rp-kicker")?.textContent.includes("RAG-Anything"));
+  const nativePage = document.querySelector(".report-page");
+  const nativeKpis = [...nativePage.querySelectorAll(".rp-kpi b")].map((el) => el.textContent);
+  check(JSON.stringify(nativeKpis) === JSON.stringify(["2", "0", "0", "3"]), `RAG-Anything counts not shown: ${nativeKpis}`);
+  check(!nativePage.querySelector(".native-queue, .native-panel"), "RAG-Anything report duplicated the ingestion queue.");
+  check(nativePage.textContent.includes("当前：本机 CLI · gpt-6.2-sol"), "RAG-Anything report should name the CLI model the status reports.");
+  check(nativePage.querySelectorAll(".rp-step").length === 5 && nativePage.querySelectorAll(".rp-rag-step").length === 6 && nativePage.querySelectorAll(".rp-store").length === 3, "RAG-Anything report lost the shared layout.");
+  check([...nativePage.querySelectorAll(".rp-app")].every((a) => a.hash.includes("arch=raganything")), "RAG-Anything report links lost their workspace.");
+  check(!nativePage.innerHTML.includes("undefined") && !nativePage.innerHTML.includes("NaN"), "Unfilled RAG-Anything template value.");
   if (summary.samples == null) {
     location.hash = "#/ingestion?arch=raganything&channel=subscription";
     await settle(() => document.querySelector(".native-progress-card"));
